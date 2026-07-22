@@ -1,61 +1,27 @@
 /**
- * Site-wide behaviour: fade page transitions, inertial scrolling,
- * scroll-triggered reveals and the animated stat counters.
+ * Site-wide behaviour: inertial scrolling, scroll-triggered reveals and the
+ * animated stat counters.
+ *
+ * Navigation is handled by Astro's <ClientRouter>, which swaps the document in
+ * place. This module is a bundled script, so it evaluates exactly once for the
+ * whole session — anything that must apply to each new page hangs off
+ * `astro:page-load`, and anything bound to `window`/`document` is registered
+ * once here because those objects survive a swap.
  */
 
 const reduceMotion = () => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
 
-/* -- Anti-flash reveal + cross-page fade ---------------------------------- */
-
-function pageTransitions() {
-  const ready = () => document.body?.classList.add('ml-ready');
-
-  if (document.readyState !== 'loading') requestAnimationFrame(ready);
-  else document.addEventListener('DOMContentLoaded', () => requestAnimationFrame(ready));
-  window.addEventListener('load', ready);
-  setTimeout(ready, 1200); // Failsafe: never leave the page invisible.
-
-  // Restoring from bfcache re-shows a page we faded out on the way out.
-  window.addEventListener('pageshow', (e) => {
-    if (e.persisted) {
-      document.body?.classList.remove('ml-leaving');
-      ready();
-    }
-  });
-
-  if (reduceMotion()) return;
-
-  document.addEventListener(
-    'click',
-    (e) => {
-      const target = e.target as Element | null;
-      const link = target?.closest?.('a[href]') as HTMLAnchorElement | null;
-      if (!link) return;
-
-      const href = link.getAttribute('href');
-      if (!href || href.startsWith('#') || link.target === '_blank') return;
-      if (/^(https?:|mailto:|tel:)/.test(href)) return;
-      // Modifier-clicks and middle-clicks must keep their native behaviour.
-      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || (e as MouseEvent).button !== 0) return;
-
-      e.preventDefault();
-      document.body.classList.remove('ml-ready');
-      document.body.classList.add('ml-leaving');
-      setTimeout(() => {
-        window.location.href = href;
-      }, 250);
-    },
-    true
-  );
-}
-
 /* -- Inertial scrolling ---------------------------------------------------- */
 
-async function smoothScroll() {
-  if (reduceMotion()) return;
+type LenisInstance = import('lenis').default;
+
+let lenis: LenisInstance | null = null;
+
+async function initSmoothScroll() {
+  if (reduceMotion() || lenis) return;
 
   const { default: Lenis } = await import('lenis');
-  const lenis = new Lenis({
+  lenis = new Lenis({
     duration: 1.05,
     smoothWheel: true,
     syncTouch: false,
@@ -64,22 +30,24 @@ async function smoothScroll() {
   });
 
   const raf = (time: number) => {
-    lenis.raf(time);
+    lenis?.raf(time);
     requestAnimationFrame(raf);
   };
   requestAnimationFrame(raf);
-
-  document.addEventListener('click', (e) => {
-    const target = e.target as Element | null;
-    const link = target?.closest?.('a[href^="#"]') as HTMLAnchorElement | null;
-    const hash = link?.getAttribute('href');
-    if (!hash || hash.length < 2) return;
-    const el = document.querySelector(hash);
-    if (!el) return;
-    e.preventDefault();
-    lenis.scrollTo(el as HTMLElement, { offset: -80 });
-  });
 }
+
+// Delegated on `document`, so it keeps working across page swaps.
+document.addEventListener('click', (e) => {
+  const target = e.target as Element | null;
+  const link = target?.closest?.('a[href^="#"]') as HTMLAnchorElement | null;
+  const hash = link?.getAttribute('href');
+  if (!hash || hash.length < 2) return;
+  const el = document.querySelector(hash);
+  if (!el) return;
+  e.preventDefault();
+  if (lenis) lenis.scrollTo(el as HTMLElement, { offset: -80 });
+  else el.scrollIntoView({ behavior: 'smooth' });
+});
 
 /* -- Reveals + stat counters ---------------------------------------------- */
 
@@ -108,6 +76,9 @@ function counterTargets(root: HTMLElement): HTMLElement[] {
   if (root.dataset.count) targets.push(root);
   return targets;
 }
+
+/** Observers belong to one page's DOM; they're torn down before the next swap. */
+let observers: IntersectionObserver[] = [];
 
 function reveals() {
   const items = Array.from(document.querySelectorAll<HTMLElement>('[data-reveal]'));
@@ -143,6 +114,7 @@ function reveals() {
       rootMargin: '0px 0px -12% 0px',
     }
   );
+  observers.push(io);
 
   requestAnimationFrame(() => {
     items.forEach((el, i) => {
@@ -183,11 +155,32 @@ function pauseOffscreenAnimations() {
       el.style.willChange = entry.isIntersecting ? 'transform' : 'auto';
     }
   });
+  observers.push(io);
 
   targets.forEach((el) => io.observe(el));
 }
 
-pageTransitions();
-reveals();
-pauseOffscreenAnimations();
-void smoothScroll();
+/* -- Lifecycle ------------------------------------------------------------- */
+
+// Fires on the first load and after every client-side navigation.
+document.addEventListener('astro:page-load', () => {
+  reveals();
+  pauseOffscreenAnimations();
+  // The incoming page is a different height; Lenis caches the old one.
+  lenis?.resize();
+});
+
+document.addEventListener('astro:before-swap', () => {
+  observers.forEach((io) => io.disconnect());
+  observers = [];
+});
+
+document.addEventListener('astro:after-swap', () => {
+  /* Astro has already set the scroll position for the new page. Lenis keeps its
+     own animated target, so without this it would smoothly scroll back to
+     wherever the previous page left off. */
+  lenis?.resize();
+  lenis?.scrollTo(window.scrollY, { immediate: true, force: true });
+});
+
+void initSmoothScroll();

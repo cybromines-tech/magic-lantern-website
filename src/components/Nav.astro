@@ -337,39 +337,52 @@ const { active = '' } = Astro.props;
 </style>
 
 <script>
-  const nav = document.querySelector<HTMLElement>('[data-nav]');
-  const burger = document.querySelector<HTMLButtonElement>('[data-burger]');
-  const menu = document.querySelector<HTMLElement>('[data-menu]');
+  /* Every listener here is delegated to `window`/`document` and resolves its
+     elements at call time. <ClientRouter> replaces the header on navigation, so
+     anything bound directly to those nodes would be dropped after the first
+     swap — and this bundled script only ever evaluates once. */
 
-  if (nav) {
-    const onScroll = () => nav.toggleAttribute('data-scrolled', window.scrollY > 24);
-    window.addEventListener('scroll', onScroll, { passive: true });
-    onScroll();
-  }
+  const getNav = () => document.querySelector<HTMLElement>('[data-nav]');
+  const getBurger = () => document.querySelector<HTMLButtonElement>('[data-burger]');
+  const getMenu = () => document.querySelector<HTMLElement>('[data-menu]');
 
-  if (nav && burger && menu) {
-    const setOpen = (open: boolean) => {
-      burger.setAttribute('aria-expanded', String(open));
-      menu.hidden = !open;
-      nav.toggleAttribute('data-open', open);
-      document.body.style.overflow = open ? 'hidden' : '';
-    };
+  const setOpen = (open: boolean) => {
+    const nav = getNav();
+    const burger = getBurger();
+    const menu = getMenu();
+    if (!nav || !burger || !menu) return;
+    burger.setAttribute('aria-expanded', String(open));
+    menu.hidden = !open;
+    nav.toggleAttribute('data-open', open);
+    document.body.style.overflow = open ? 'hidden' : '';
+  };
 
-    burger.addEventListener('click', () =>
-      setOpen(burger.getAttribute('aria-expanded') !== 'true')
-    );
+  const syncScrolled = () => getNav()?.toggleAttribute('data-scrolled', window.scrollY > 24);
 
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && burger.getAttribute('aria-expanded') === 'true') {
-        setOpen(false);
-        burger.focus();
-      }
-    });
+  window.addEventListener('scroll', syncScrolled, { passive: true });
 
-    // Leaving the mobile breakpoint with the menu open would strand the
-    // body scroll lock behind a hidden panel.
-    window.matchMedia('(min-width: 940px)').addEventListener('change', (e) => {
-      if (e.matches) setOpen(false);
-    });
-  }
+  document.addEventListener('click', (e) => {
+    const target = e.target as Element | null;
+    if (!target?.closest?.('[data-burger]')) return;
+    setOpen(getBurger()?.getAttribute('aria-expanded') !== 'true');
+  });
+
+  document.addEventListener('keydown', (e) => {
+    const burger = getBurger();
+    if (e.key !== 'Escape' || burger?.getAttribute('aria-expanded') !== 'true') return;
+    setOpen(false);
+    burger.focus();
+  });
+
+  // Leaving the mobile breakpoint with the menu open would strand the
+  // body scroll lock behind a hidden panel.
+  window.matchMedia('(min-width: 940px)').addEventListener('change', (e) => {
+    if (e.matches) setOpen(false);
+  });
+
+  // A tapped link navigates with the menu still open; the new page must not
+  // inherit the scroll lock.
+  document.addEventListener('astro:after-swap', () => setOpen(false));
+  document.addEventListener('astro:page-load', syncScrolled);
+  syncScrolled();
 </script>

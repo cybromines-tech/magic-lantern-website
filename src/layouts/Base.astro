@@ -1,4 +1,5 @@
 ---
+import { ClientRouter } from 'astro:transitions';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import { site } from '../data/site';
@@ -51,18 +52,10 @@ const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url).href;
     <meta property="og:image" content={new URL('/assets/logo-white.svg', Astro.site ?? Astro.url).href} />
     <meta name="twitter:card" content="summary_large_image" />
 
-    <script is:inline>
-      // Runs before paint so the body never flashes at opacity 0 if the module
-      // bundle is slow or blocked.
-      (function () {
-        var show = function () {
-          if (document.body) document.body.classList.add('ml-ready');
-        };
-        if (document.readyState !== 'loading') show();
-        else document.addEventListener('DOMContentLoaded', show);
-        setTimeout(show, 700);
-      })();
-    </script>
+    {/* Swaps the document in place instead of reloading, so navigating never
+        blanks the page. Cross-fades via the View Transitions API where it is
+        supported, and falls back to a plain instant navigation elsewhere. */}
+    <ClientRouter />
   </head>
 
   <body>
