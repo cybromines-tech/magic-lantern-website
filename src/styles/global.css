@@ -117,21 +117,15 @@ svg {
 }
 
 /* --- Page transitions ---------------------------------------------------- */
-/* Body starts hidden and is revealed by site.ts, so a cross-page navigation
-   reads as one continuous fade rather than a white flash. */
+/* Handled by Astro's <ClientRouter>. The body is never hidden: the previous
+   approach faded it out, reloaded the document, then faded back in, which
+   showed a blank page for the whole load. The swap now happens in place and
+   the two pages cross-fade. */
 
-body {
-  opacity: 0;
-}
-
-body.ml-ready {
-  opacity: 1;
-  transition: opacity 0.4s ease;
-}
-
-body.ml-leaving {
-  opacity: 0;
-  transition: opacity 0.26s ease;
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.28s;
+  animation-timing-function: var(--ease-out);
 }
 
 /* --- Motion -------------------------------------------------------------- */
@@ -185,9 +179,9 @@ body.ml-leaving {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  body {
-    opacity: 1 !important;
-    transition: none !important;
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none !important;
   }
 
   *,

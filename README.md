@@ -74,6 +74,23 @@ loop pauses when the element scrolls out of view or the tab is hidden, and the
 element renders nothing at all under `prefers-reduced-motion` or without WebGL —
 the CSS gradient behind it carries the section either way.
 
+## Navigation
+
+Astro's `<ClientRouter>` (in `Base.astro`) swaps the document in place rather than
+reloading it, and cross-fades the two pages via the View Transitions API. Browsers
+without it fall back to a plain instant navigation.
+
+Two consequences worth knowing before editing client code:
+
+- **Bundled `<script>` blocks evaluate once per session, not per page.** Anything
+  that must apply to each new page hangs off `astro:page-load`; see `site.ts` and
+  the delegated listeners in `Nav.astro`. Binding a handler directly to a nav or
+  header element will silently stop working after the first navigation, because
+  that node has been replaced.
+- **`window` and `document` survive a swap, so Lenis is created once** and is
+  re-synced on `astro:after-swap`. Without that re-sync it keeps animating toward
+  the previous page's scroll target.
+
 ## Performance constraints (don't undo these)
 
 Scrolling is smoothed by Lenis, which owns the scroll position and writes it
@@ -85,6 +102,9 @@ stutter back:
   imported in `Base.astro` and enforces `scroll-behavior: auto` via `html.lenis`.
 - **`body` uses `overflow-x: clip`, not `hidden`.** `hidden` makes the body a
   scroll container that Lenis then competes with.
+- **Never hide `body` behind an opacity fade.** An earlier version faded the body
+  out, reloaded the document, then faded it back in — which showed a blank page
+  for the entire load. `<ClientRouter>` handles the transition now.
 - **The WebGL scene is capped**: pixel ratio 1.25 (not `devicePixelRatio`) and
   60fps. Uncapped on a retina ProMotion display that was ~3.3 megapixels of MSAA
   at 120Hz, all of it competing with scroll compositing. It's a soft background —
