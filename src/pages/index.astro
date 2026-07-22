@@ -1,0 +1,700 @@
+---
+import Base from '../layouts/Base.astro';
+import MLScene from '../components/MLScene.astro';
+import { services, site } from '../data/site';
+
+const marqueeWords = [
+  'Video Production',
+  'Branding',
+  'Digital Marketing',
+  'Website Development',
+  'Photoshoots',
+  'Social Reels',
+];
+/* Doubled so the -50% keyframe loops seamlessly. */
+const marquee = [...marqueeWords, ...marqueeWords];
+
+const stats = [
+  { value: 120, suffix: '+', label: 'Projects delivered' },
+  { value: 48, suffix: '+', label: 'Brands illuminated' },
+  { value: 300, suffix: '+', label: 'Films & reels shot' },
+  { value: 100, suffix: '%', label: 'In-house, start to end' },
+];
+
+const steps = [
+  { step: 'STEP 01', title: 'Discover', desc: 'We dig into your brand, audience and goals to find the story worth telling.' },
+  { step: 'STEP 02', title: 'Strategy', desc: 'A clear plan — channels, messaging and a creative direction that fits.' },
+  { step: 'STEP 03', title: 'Create', desc: 'Scripting, shooting, design and edit — crafted in-house, obsessively.' },
+  { step: 'STEP 04', title: 'Launch', desc: 'We publish, promote and put your work in front of the right people.' },
+  { step: 'STEP 05', title: 'Grow', desc: 'We measure, optimise and keep the momentum building month on month.' },
+];
+
+const work = [
+  { tag: 'Video Production', title: 'Brand Film', src: '/assets/covers/cover-video.svg' },
+  { tag: 'Social Reels', title: 'Campaign Series', src: '/assets/covers/cover-reel.svg' },
+  { tag: 'Product Shoot', title: 'Studio Photography', src: '/assets/covers/cover-photo.svg' },
+];
+---
+
+<Base title={site.name} active="home">
+  <!-- HERO -->
+  <section class="hero">
+    <MLScene variant="hero" />
+    <div class="hero__scrim" aria-hidden="true"></div>
+
+    <div class="hero__inner shell">
+      <div class="hero__copy">
+        <p class="hero__badge heroIn">
+          <span class="hero__pulse" aria-hidden="true"></span>{site.tagline}
+        </p>
+
+        <h1 class="hero__title heroIn">
+          Lights. Camera.<br /><span>Growth.</span>
+        </h1>
+
+        <p class="hero__lede lede heroIn">{site.description} One team, start to end.</p>
+
+        <div class="hero__actions heroIn">
+          <a href="/contact" class="btn btn--flame">Start your project →</a>
+          <a href="/portfolio" class="btn btn--ghost">▶ Watch our work</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero__scroll" aria-hidden="true">
+      Scroll
+      <span class="hero__mouse"><span class="hero__wheel"></span></span>
+    </div>
+  </section>
+
+  <!-- MARQUEE -->
+  <section class="marquee">
+    <div class="marquee__track" aria-hidden="true" data-animate-in-view>
+      {
+        marquee.map((word, i) => (
+          <span class="marquee__item">
+            <span class:list={['marquee__word', i % 2 === 1 && 'marquee__word--outline']}>
+              {word}
+            </span>
+            <span class="marquee__diamond" />
+          </span>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- INTRO -->
+  <section class="intro">
+    <div class="shell shell--narrow">
+      <p class="eyebrow" data-reveal>From idea to impact</p>
+      <p class="intro__statement" data-reveal>
+        We believe in the power of storytelling to transform perspectives and connect people.
+        Every frame, every headline, every pixel is built to make audiences
+        <span>stop, watch and remember.</span>
+      </p>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section class="services">
+    <div class="shell">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow" data-reveal>What we do</p>
+          <h2 class="display" data-reveal>Four ways we<br />light up brands</h2>
+        </div>
+        <a href="/services" class="link-arrow" data-reveal>All services →</a>
+      </div>
+
+      <div class="services__grid">
+        {
+          services.map((s) => (
+            <a href={s.href} class="card" data-reveal>
+              <span class="card__num">{s.num}</span>
+              <span class="card__body">
+                <span class="card__title">{s.title}</span>
+                <span class="card__desc">{s.desc}</span>
+              </span>
+              <span class="card__more">Explore →</span>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section class="stats">
+    <div class="shell shell--narrow stats__grid">
+      {
+        stats.map((st) => (
+          <div class="stat" data-reveal>
+            <span class="stat__value" data-count={`${st.value}${st.suffix}`}>0{st.suffix}</span>
+            <span class="stat__label">{st.label}</span>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- PROCESS -->
+  <section class="process">
+    <div class="shell">
+      <p class="eyebrow" data-reveal>Start to end</p>
+      <h2 class="display process__title" data-reveal>One team, every step</h2>
+
+      <ol class="process__grid">
+        {
+          steps.map((p) => (
+            <li class="step" data-reveal>
+              <span class="step__num">{p.step}</span>
+              <h3 class="step__title">{p.title}</h3>
+              <p class="step__desc">{p.desc}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <!-- WORK -->
+  <section class="work">
+    <div class="shell">
+      <div class="section-head work__head">
+        <h2 class="display" data-reveal>Recent work</h2>
+        <a href="/portfolio" class="link-arrow" data-reveal>View portfolio →</a>
+      </div>
+
+      <div class="work__grid">
+        {
+          work.map((w) => (
+            <a href="/portfolio" class="tile" data-reveal>
+              <img class="tile__img" src={w.src} alt="" loading="lazy" decoding="async" />
+              <span class="tile__scrim" aria-hidden="true" />
+              <span class="tile__meta">
+                <span class="tile__tag">{w.tag}</span>
+                <span class="tile__title">{w.title}</span>
+              </span>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta">
+    <div class="cta__inner" data-reveal>
+      <p class="cta__script">ready when you are</p>
+      <h2 class="cta__title">Let&rsquo;s make something<br />worth watching</h2>
+      <div class="cta__actions">
+        <a href="/contact" class="btn btn--light">Start a project</a>
+        <a href={site.whatsapp} target="_blank" rel="noopener" class="btn btn--outline-light">
+          Chat on WhatsApp
+        </a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  /* --- Hero --------------------------------------------------------------- */
+
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    min-height: 100svh;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    background: radial-gradient(130% 100% at 72% 24%, #3a1f1c 0%, #1c1d22 44%, #0f1012 100%);
+  }
+
+  /* Darkens the lower-left so hero copy keeps contrast over the WebGL embers. */
+  .hero__scrim {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(90% 70% at 30% 60%, rgba(15, 16, 18, 0.72), transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero__inner {
+    position: relative;
+    padding-block: 120px 90px;
+    pointer-events: none; /* Let the pointer reach the scene; buttons opt back in. */
+  }
+
+  .hero__copy {
+    max-width: 820px;
+  }
+
+  .hero__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 11px;
+    margin: 0 0 30px;
+    padding: 9px 16px;
+    border-radius: 999px;
+    background: rgba(178, 35, 25, 0.14);
+    border: 1px solid rgba(224, 86, 74, 0.32);
+    font-family: var(--font-ui);
+    font-weight: 600;
+    font-size: 12.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ml-blush);
+  }
+
+  .hero__pulse {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--ml-flame);
+    animation: mlPulse 2.4s infinite;
+  }
+
+  .hero__title {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(52px, 9.4vw, 140px);
+    line-height: 0.9;
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
+    margin: 0;
+    color: var(--ml-ink-hi);
+    text-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  }
+
+  .hero__title span {
+    color: var(--ml-flame);
+  }
+
+  .hero__lede {
+    max-width: 600px;
+    margin: 28px 0 40px;
+  }
+
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    pointer-events: auto;
+  }
+
+  /* Staggered entrance for the hero stack. */
+  .heroIn {
+    opacity: 0;
+    animation: mlUp 0.9s var(--ease-out) forwards;
+  }
+
+  .hero__title.heroIn {
+    animation-delay: 0.08s;
+  }
+
+  .hero__lede.heroIn {
+    animation-delay: 0.16s;
+  }
+
+  .hero__actions.heroIn {
+    animation-delay: 0.24s;
+  }
+
+  .hero__scroll {
+    position: absolute;
+    bottom: 26px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: #8b8c90;
+    font-family: var(--font-ui);
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+  }
+
+  .hero__mouse {
+    width: 22px;
+    height: 34px;
+    border: 1.5px solid rgba(255, 255, 255, 0.25);
+    border-radius: 14px;
+    display: flex;
+    justify-content: center;
+    padding-top: 6px;
+  }
+
+  .hero__wheel {
+    width: 4px;
+    height: 8px;
+    border-radius: 2px;
+    background: var(--ml-flame);
+    animation: mlDot 1.8s infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .heroIn {
+      opacity: 1;
+      animation: none;
+    }
+  }
+
+  /* --- Marquee ------------------------------------------------------------ */
+
+  .marquee {
+    position: relative;
+    overflow: hidden;
+    background: var(--ml-bg);
+    border-top: 1px solid var(--ml-line-soft);
+    border-bottom: 1px solid var(--ml-line-soft);
+    padding: 26px 0;
+  }
+
+  /* `will-change` is applied by pauseOffscreenAnimations() only while the
+     track is on screen — left on permanently it pins a very wide layer in
+     GPU memory for the whole page. */
+  .marquee__track {
+    display: flex;
+    width: max-content;
+    animation: mlMarquee 32s linear infinite;
+  }
+
+  .marquee:hover .marquee__track {
+    animation-play-state: paused;
+  }
+
+  .marquee__item {
+    display: inline-flex;
+    align-items: center;
+    gap: clamp(28px, 4vw, 56px);
+    padding: 0 clamp(14px, 2vw, 28px);
+  }
+
+  .marquee__word {
+    font-family: var(--font-display);
+    font-size: clamp(26px, 3.4vw, 50px);
+    text-transform: uppercase;
+    letter-spacing: 0.01em;
+    color: var(--ml-ink);
+    white-space: nowrap;
+  }
+
+  /* Alternating words are knocked out to an outline for rhythm. */
+  .marquee__word--outline {
+    color: transparent;
+    -webkit-text-stroke: 1.2px var(--ml-red);
+  }
+
+  .marquee__diamond {
+    width: 12px;
+    height: 12px;
+    flex: none;
+    transform: rotate(45deg);
+    background: var(--ml-red);
+  }
+
+  /* --- Intro -------------------------------------------------------------- */
+
+  .intro {
+    position: relative;
+    padding-block: var(--section-y);
+    background: var(--ml-bg-alt);
+  }
+
+  .intro .eyebrow {
+    margin-bottom: 26px;
+  }
+
+  .intro__statement {
+    font-family: var(--font-ui);
+    font-weight: 600;
+    font-size: clamp(26px, 3.4vw, 46px);
+    line-height: 1.28;
+    letter-spacing: -0.01em;
+    color: var(--ml-ink);
+    margin: 0;
+    max-width: 960px;
+  }
+
+  .intro__statement span {
+    color: var(--ml-flame);
+  }
+
+  /* --- Services ----------------------------------------------------------- */
+
+  .services {
+    position: relative;
+    padding: clamp(60px, 7vw, 110px) 0 var(--section-y);
+    background: var(--ml-bg-alt);
+  }
+
+  .services__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+    gap: 20px;
+  }
+
+  .card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 26px;
+    min-height: 260px;
+    padding: 30px 28px;
+    border-radius: 18px;
+    background: var(--ml-surface);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: transform 0.3s var(--ease-out), border-color 0.3s, background 0.3s;
+  }
+
+  .card:hover {
+    border-color: rgba(224, 86, 74, 0.5);
+    transform: translateY(-6px);
+    background: var(--ml-surface-hi);
+  }
+
+  .card__num {
+    font-family: var(--font-display);
+    font-size: 40px;
+    line-height: 1;
+    color: rgba(224, 86, 74, 0.28);
+  }
+
+  .card__title {
+    display: block;
+    font-family: var(--font-ui);
+    font-weight: 700;
+    font-size: 22px;
+    color: var(--ml-ink);
+    margin-bottom: 12px;
+  }
+
+  .card__desc {
+    display: block;
+    font-size: 14.5px;
+    line-height: 1.6;
+    color: var(--ml-muted);
+  }
+
+  .card__more {
+    font-family: var(--font-ui);
+    font-weight: 600;
+    font-size: 13.5px;
+    color: var(--ml-flame);
+  }
+
+  /* --- Stats -------------------------------------------------------------- */
+
+  .stats {
+    position: relative;
+    padding-block: clamp(56px, 6vw, 92px);
+    background: linear-gradient(180deg, #0f1012, #17110f);
+    border-top: 1px solid var(--ml-line-soft);
+    border-bottom: 1px solid var(--ml-line-soft);
+  }
+
+  .stats__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 32px;
+    text-align: center;
+  }
+
+  .stat__value {
+    display: block;
+    font-family: var(--font-display);
+    font-size: clamp(46px, 6vw, 74px);
+    line-height: 1;
+    color: var(--ml-flame);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .stat__label {
+    display: block;
+    font-family: var(--font-ui);
+    font-weight: 500;
+    font-size: 14px;
+    letter-spacing: 0.02em;
+    color: #b8b9bc;
+    margin-top: 12px;
+  }
+
+  /* --- Process ------------------------------------------------------------ */
+
+  .process {
+    position: relative;
+    padding-block: var(--section-y);
+    background: var(--ml-bg-alt);
+  }
+
+  .process__title {
+    margin-bottom: 56px;
+  }
+
+  /* 1px grid gaps over a light background render the hairline dividers. */
+  .process__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    background: var(--ml-line);
+    border: 1px solid var(--ml-line);
+    border-radius: 18px;
+    overflow: hidden;
+  }
+
+  .step {
+    background: var(--ml-surface);
+    padding: 32px 26px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-height: 210px;
+  }
+
+  .step__num {
+    font-family: var(--font-ui);
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    color: var(--ml-flame);
+  }
+
+  .step__title {
+    font-family: var(--font-ui);
+    font-weight: 700;
+    font-size: 20px;
+    color: var(--ml-ink);
+    margin: 0;
+  }
+
+  .step__desc {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #a0a1a5;
+    margin: 0;
+  }
+
+  /* --- Work --------------------------------------------------------------- */
+
+  .work {
+    position: relative;
+    padding: clamp(60px, 7vw, 110px) 0 var(--section-y);
+    background: var(--ml-bg);
+  }
+
+  .work__head {
+    margin-bottom: 44px;
+  }
+
+  .work__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 18px;
+  }
+
+  .tile {
+    position: relative;
+    display: block;
+    border-radius: 16px;
+    overflow: hidden;
+    aspect-ratio: 4 / 5;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: var(--ml-surface);
+    transition: border-color 0.3s;
+  }
+
+  .tile:hover {
+    border-color: rgba(224, 86, 74, 0.5);
+  }
+
+  .tile__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s var(--ease-out);
+  }
+
+  .tile:hover .tile__img {
+    transform: scale(1.05);
+  }
+
+  .tile__scrim {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 45%, rgba(10, 10, 12, 0.9));
+    pointer-events: none;
+  }
+
+  .tile__meta {
+    position: absolute;
+    left: 22px;
+    right: 22px;
+    bottom: 22px;
+    pointer-events: none;
+  }
+
+  .tile__tag {
+    display: block;
+    font-family: var(--font-ui);
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ml-blush);
+    margin-bottom: 6px;
+  }
+
+  .tile__title {
+    display: block;
+    font-family: var(--font-ui);
+    font-weight: 700;
+    font-size: 20px;
+    color: #fff;
+  }
+
+  /* --- CTA ---------------------------------------------------------------- */
+
+  .cta {
+    position: relative;
+    padding: clamp(72px, 9vw, 140px) var(--gutter);
+    background: radial-gradient(120% 130% at 80% 20%, #7c130f 0%, #3a0f0c 40%, #160b0a 100%);
+    overflow: hidden;
+  }
+
+  .cta__inner {
+    position: relative;
+    max-width: 1000px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .cta__script {
+    font-family: var(--font-script);
+    font-size: clamp(28px, 4vw, 44px);
+    color: var(--ml-blush-soft);
+    margin: 0 0 10px;
+  }
+
+  .cta__title {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(40px, 7vw, 104px);
+    line-height: 0.94;
+    text-transform: uppercase;
+    margin: 0 0 30px;
+    color: #fff;
+  }
+
+  .cta__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    justify-content: center;
+  }
+</style>

@@ -1,0 +1,212 @@
+---
+import Logo from './Logo.astro';
+import { services, site, socials } from '../data/site';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="footer__bloom" aria-hidden="true"></div>
+
+  <div class="shell footer__inner">
+    <div class="footer__cols">
+      <div class="footer__about">
+        <a href="/" class="footer__logo" aria-label={`${site.name} — home`}>
+          <Logo size={52} />
+        </a>
+        <p class="footer__blurb">
+          A vibrant, dynamic media house illuminating stories that inspire, educate and
+          entertain — end&#8209;to&#8209;end marketing, from the first idea to the final cut.
+        </p>
+        <p class="footer__script">
+          The best marketing of all<br /><span>is happy clients.</span>
+        </p>
+      </div>
+
+      <nav class="footer__col" aria-label="Explore">
+        <h2 class="footer__title">Explore</h2>
+        <a href="/" class="footer__link">Home</a>
+        <a href="/about" class="footer__link">About Us</a>
+        <a href="/portfolio" class="footer__link">Our Work</a>
+        <a href="/team" class="footer__link">Team</a>
+        <a href="/contact" class="footer__link">Contact</a>
+      </nav>
+
+      <nav class="footer__col" aria-label="Services">
+        <h2 class="footer__title">Services</h2>
+        {services.map((s) => <a href={s.href} class="footer__link">{s.title}</a>)}
+      </nav>
+
+      <div class="footer__contact">
+        <h2 class="footer__title">Get in touch</h2>
+        <a href={`mailto:${site.email}`} class="footer__link">{site.email}</a>
+        <a href={site.phoneHref} class="footer__link">{site.phone}</a>
+        <p class="footer__address">
+          {site.address}<br /><span>(update with your real address)</span>
+        </p>
+        <div class="footer__socials">
+          {
+            socials.map((s) => (
+              <a href={s.href} class="footer__social" aria-label={s.name}>
+                {s.label}
+              </a>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="footer__base">
+      <span>© {year} {site.legalName}. All rights reserved.</span>
+      <span>{site.founded}</span>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    position: relative;
+    background: var(--ml-footer);
+    color: #c4c5c8;
+    font-family: var(--font-body);
+    overflow: hidden;
+    border-top: 1px solid var(--ml-line-soft);
+  }
+
+  /* Off-canvas crimson bloom in the top-right corner. */
+  .footer__bloom {
+    position: absolute;
+    top: -140px;
+    right: -80px;
+    width: 420px;
+    height: 420px;
+    background: radial-gradient(circle, rgba(178, 35, 25, 0.22), transparent 68%);
+    pointer-events: none;
+  }
+
+  .footer__inner {
+    position: relative;
+    padding-top: clamp(56px, 7vw, 88px);
+  }
+
+  .footer__cols {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 48px 40px;
+    justify-content: space-between;
+  }
+
+  .footer__about {
+    flex: 1 1 300px;
+    max-width: 400px;
+  }
+
+  .footer__logo {
+    display: inline-block;
+    margin-bottom: 22px;
+  }
+
+  .footer__blurb {
+    font-size: 15.5px;
+    line-height: 1.65;
+    color: #9a9ba0;
+    margin: 0 0 26px;
+  }
+
+  .footer__script {
+    font-family: var(--font-script);
+    font-size: 30px;
+    line-height: 1.15;
+    color: #e6e6e8;
+    margin: 0;
+  }
+
+  .footer__script span {
+    color: var(--ml-flame);
+  }
+
+  .footer__col {
+    flex: 0 1 auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .footer__contact {
+    flex: 1 1 260px;
+    max-width: 320px;
+  }
+
+  .footer__title {
+    font-family: var(--font-ui);
+    font-weight: 700;
+    font-size: 12.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ml-flame);
+    margin: 0 0 18px;
+  }
+
+  .footer__link {
+    display: block;
+    font-size: 15px;
+    color: var(--ml-muted);
+    padding: 7px 0;
+    transition: color 0.2s;
+  }
+
+  .footer__link:hover {
+    color: var(--ml-flame);
+  }
+
+  .footer__address {
+    font-size: 14px;
+    color: var(--ml-dim);
+    margin: 6px 0 20px;
+    line-height: 1.6;
+  }
+
+  .footer__address span {
+    font-size: 12.5px;
+    opacity: 0.75;
+  }
+
+  .footer__socials {
+    display: flex;
+    gap: 10px;
+  }
+
+  .footer__social {
+    width: 42px;
+    height: 42px;
+    border-radius: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-ui);
+    font-weight: 600;
+    font-size: 13px;
+    color: #d4d5d8;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: background 0.2s, transform 0.2s;
+  }
+
+  .footer__social:hover {
+    background: rgba(178, 35, 25, 0.3);
+    color: #fff;
+    transform: translateY(-2px);
+  }
+
+  .footer__base {
+    margin-top: clamp(48px, 6vw, 72px);
+    padding: 26px 0;
+    border-top: 1px solid var(--ml-line);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    color: var(--ml-faint);
+  }
+</style>

@@ -1,0 +1,14 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import ContentPending from '../components/ContentPending.astro';
+---
+
+<Base title="Page not found" description="That page has left the frame.">
+  <PageHero
+    eyebrow="404"
+    title="Off camera"
+    lede="That page has left the frame. Let's get you back to something worth watching."
+  />
+  <ContentPending note="Try the menu above — or jump straight to the work." />
+</Base>

@@ -1,0 +1,80 @@
+---
+import MLScene from './MLScene.astro';
+
+interface Props {
+  eyebrow: string;
+  title: string;
+  lede?: string;
+}
+
+const { eyebrow, title, lede } = Astro.props;
+---
+
+<section class="page-hero">
+  <MLScene variant="orbit" />
+  <div class="page-hero__scrim" aria-hidden="true"></div>
+  <div class="shell page-hero__inner">
+    <p class="eyebrow heroIn">{eyebrow}</p>
+    <h1 class="page-hero__title heroIn">{title}</h1>
+    {lede && <p class="lede page-hero__lede heroIn">{lede}</p>}
+  </div>
+</section>
+
+<style>
+  .page-hero {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    min-height: 62vh;
+    overflow: hidden;
+    background: radial-gradient(120% 100% at 75% 20%, #3a1f1c 0%, #1c1d22 46%, #0f1012 100%);
+  }
+
+  .page-hero__scrim {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(90% 80% at 25% 70%, rgba(15, 16, 18, 0.8), transparent 70%);
+    pointer-events: none;
+  }
+
+  .page-hero__inner {
+    position: relative;
+    padding-block: 160px clamp(56px, 7vw, 90px);
+  }
+
+  .page-hero__title {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(44px, 8vw, 116px);
+    line-height: 0.92;
+    text-transform: uppercase;
+    margin: 0;
+    color: var(--ml-ink-hi);
+    text-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  }
+
+  .page-hero__lede {
+    max-width: 620px;
+    margin-top: 26px;
+  }
+
+  .heroIn {
+    opacity: 0;
+    animation: mlUp 0.9s var(--ease-out) forwards;
+  }
+
+  .page-hero__title.heroIn {
+    animation-delay: 0.08s;
+  }
+
+  .page-hero__lede.heroIn {
+    animation-delay: 0.16s;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .heroIn {
+      opacity: 1;
+      animation: none;
+    }
+  }
+</style>

@@ -1,0 +1,375 @@
+---
+import Logo from './Logo.astro';
+import { navLinks, site } from '../data/site';
+
+interface Props {
+  /** Key of the current page, matched against navLinks[].key. */
+  active?: string;
+}
+
+const { active = '' } = Astro.props;
+---
+
+<header class="nav" data-nav>
+  <div class="nav__bar shell">
+    <a href="/" class="nav__brand" aria-label={`${site.name} — home`}>
+      <Logo size={38} />
+    </a>
+
+    <nav class="nav__links" aria-label="Primary">
+      {
+        navLinks.map((link) =>
+          link.children ? (
+            <div class="nav__group">
+              <a
+                href={link.href}
+                class="nav__link"
+                aria-current={active === link.key ? 'page' : undefined}
+                aria-expanded="false"
+                aria-haspopup="true"
+              >
+                {link.label}
+                <span class="nav__caret" aria-hidden="true">▾</span>
+              </a>
+              <div class="nav__drop">
+                <div class="nav__drop-panel">
+                  {link.children.map((child) => (
+                    <a href={child.href} class="nav__drop-item">
+                      {child.label}
+                    </a>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ) : (
+            <a
+              href={link.href}
+              class="nav__link"
+              aria-current={active === link.key ? 'page' : undefined}
+            >
+              {link.label}
+            </a>
+          )
+        )
+      }
+    </nav>
+
+    <a
+      href={site.whatsapp}
+      target="_blank"
+      rel="noopener"
+      class="nav__cta"
+    >
+      <span class="nav__pip" aria-hidden="true"></span>Let&rsquo;s talk
+    </a>
+
+    <button class="nav__burger" type="button" aria-label="Menu" aria-expanded="false" aria-controls="nav-menu" data-burger>
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+
+  <div class="nav__menu" id="nav-menu" data-menu hidden>
+    <a href="/" class="nav__menu-link">Home</a>
+    <a href="/about" class="nav__menu-link">About</a>
+    <a href="/services" class="nav__menu-link">Services</a>
+    <a href="/service-branding" class="nav__menu-sub">— Branding</a>
+    <a href="/service-digital" class="nav__menu-sub">— Digital Marketing</a>
+    <a href="/service-web" class="nav__menu-sub">— Website Development</a>
+    <a href="/service-video" class="nav__menu-sub">— Video &amp; Photoshoot</a>
+    <a href="/portfolio" class="nav__menu-link">Work</a>
+    <a href="/team" class="nav__menu-link">Team</a>
+    <a href="/contact" class="nav__menu-link">Contact</a>
+    <a href={site.whatsapp} target="_blank" rel="noopener" class="nav__menu-cta">
+      Let&rsquo;s talk on WhatsApp
+    </a>
+  </div>
+</header>
+
+<style>
+  .nav {
+    position: fixed;
+    inset: 0 0 auto 0;
+    z-index: 200;
+    background: linear-gradient(180deg, rgba(12, 12, 14, 0.55), rgba(12, 12, 14, 0));
+    border-bottom: 1px solid transparent;
+    transition: background 0.3s, border-color 0.3s, backdrop-filter 0.3s;
+  }
+
+  /* Toggled by the scroll listener below, and while the mobile menu is open. */
+  .nav[data-scrolled],
+  .nav[data-open] {
+    background: rgba(16, 17, 19, 0.86);
+    backdrop-filter: blur(14px);
+    border-bottom-color: var(--ml-line);
+  }
+
+  .nav__bar {
+    height: var(--nav-h);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
+  .nav__brand {
+    flex-shrink: 0;
+  }
+
+  .nav__links {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .nav__group {
+    position: relative;
+  }
+
+  .nav__link {
+    display: inline-block;
+    font-family: var(--font-ui);
+    font-weight: 600;
+    font-size: 13.5px;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: #c4c5c8;
+    padding: 9px 15px;
+    border-radius: 9px;
+    transition: color 0.2s, background 0.2s;
+  }
+
+  .nav__link:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .nav__link[aria-current='page'] {
+    color: #fff;
+    background: rgba(178, 35, 25, 0.16);
+    box-shadow: inset 0 0 0 1px rgba(178, 35, 25, 0.4);
+  }
+
+  .nav__caret {
+    font-size: 9px;
+    opacity: 0.7;
+    margin-left: 2px;
+  }
+
+  /* Dropdown: the padded wrapper keeps a hover bridge under the trigger. */
+  .nav__drop {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-6px);
+    padding-top: 12px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.18s, transform 0.18s, visibility 0.18s;
+  }
+
+  .nav__group:hover .nav__drop,
+  .nav__group:focus-within .nav__drop {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .nav__drop-panel {
+    min-width: 240px;
+    background: var(--ml-panel);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    padding: 8px;
+    box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.7);
+  }
+
+  .nav__drop-item {
+    display: block;
+    font-family: var(--font-ui);
+    font-weight: 500;
+    font-size: 14px;
+    color: #d4d5d8;
+    padding: 11px 14px;
+    border-radius: 9px;
+    transition: background 0.18s, color 0.18s;
+  }
+
+  .nav__drop-item:hover {
+    background: rgba(178, 35, 25, 0.18);
+    color: #fff;
+  }
+
+  .nav__cta {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    font-family: var(--font-ui);
+    font-weight: 600;
+    font-size: 13.5px;
+    letter-spacing: 0.02em;
+    color: #fff;
+    padding: 12px 22px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, var(--ml-red), var(--ml-red-deep));
+    box-shadow: 0 10px 26px -10px rgba(178, 35, 25, 0.8);
+    transition: filter 0.2s, transform 0.2s;
+  }
+
+  .nav__cta:hover {
+    color: #fff;
+    filter: brightness(1.12);
+    transform: translateY(-1px);
+  }
+
+  /* Live-status pip on the WhatsApp button. */
+  .nav__pip {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #5ee06b;
+    box-shadow: 0 0 8px #5ee06b;
+  }
+
+  .nav__burger {
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+    width: 44px;
+    padding: 8px;
+    background: none;
+    border: 0;
+    cursor: pointer;
+  }
+
+  .nav__burger span {
+    display: block;
+    height: 2px;
+    width: 26px;
+    background: var(--ml-ink);
+    border-radius: 2px;
+    transition: transform 0.3s, opacity 0.2s;
+  }
+
+  .nav__burger[aria-expanded='true'] span:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+  }
+
+  .nav__burger[aria-expanded='true'] span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .nav__burger[aria-expanded='true'] span:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
+  }
+
+  /* Absolute, not fixed: the header's backdrop-filter makes it a containing
+     block, so a fixed child would resolve against the 76px bar and collapse. */
+  .nav__menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    height: calc(100dvh - var(--nav-h));
+    /* Opaque rather than the source's 98% alpha: nested inside the header's
+       own backdrop-filter, the translucent version let the hero ghost through. */
+    background: #101113;
+    display: flex;
+    flex-direction: column;
+    padding: 24px clamp(20px, 6vw, 44px);
+    gap: 4px;
+    overflow: auto;
+  }
+
+  .nav__menu[hidden] {
+    display: none;
+  }
+
+  .nav__menu-link {
+    font-family: var(--font-display);
+    font-size: 30px;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--ml-ink);
+    padding: 10px 0;
+  }
+
+  .nav__menu-sub {
+    font-family: var(--font-ui);
+    font-size: 14px;
+    color: #9a9ba0;
+    padding: 4px 0 4px 8px;
+  }
+
+  .nav__menu-cta {
+    margin-top: 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    font-family: var(--font-ui);
+    font-weight: 600;
+    font-size: 16px;
+    color: #fff;
+    padding: 16px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, var(--ml-red), var(--ml-red-deep));
+  }
+
+  /* The original switched layouts at 940px via a JS width listener; a media
+     query does the same job without shipping the listener. */
+  @media (max-width: 939px) {
+    .nav__links,
+    .nav__cta {
+      display: none;
+    }
+
+    .nav__burger {
+      display: flex;
+    }
+  }
+
+  @media (min-width: 940px) {
+    .nav__menu {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  const nav = document.querySelector<HTMLElement>('[data-nav]');
+  const burger = document.querySelector<HTMLButtonElement>('[data-burger]');
+  const menu = document.querySelector<HTMLElement>('[data-menu]');
+
+  if (nav) {
+    const onScroll = () => nav.toggleAttribute('data-scrolled', window.scrollY > 24);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  }
+
+  if (nav && burger && menu) {
+    const setOpen = (open: boolean) => {
+      burger.setAttribute('aria-expanded', String(open));
+      menu.hidden = !open;
+      nav.toggleAttribute('data-open', open);
+      document.body.style.overflow = open ? 'hidden' : '';
+    };
+
+    burger.addEventListener('click', () =>
+      setOpen(burger.getAttribute('aria-expanded') !== 'true')
+    );
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && burger.getAttribute('aria-expanded') === 'true') {
+        setOpen(false);
+        burger.focus();
+      }
+    });
+
+    // Leaving the mobile breakpoint with the menu open would strand the
+    // body scroll lock behind a hidden panel.
+    window.matchMedia('(min-width: 940px)').addEventListener('change', (e) => {
+      if (e.matches) setOpen(false);
+    });
+  }
+</script>
