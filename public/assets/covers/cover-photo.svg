@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1c1d23"></stop><stop offset="1" stop-color="#0f1012"></stop></linearGradient>
+    <radialGradient id="glow" cx="72%" cy="26%" r="70%"><stop offset="0" stop-color="#b22319" stop-opacity=".42"></stop><stop offset="55%" stop-color="#b22319" stop-opacity="0"></stop></radialGradient>
+  </defs>
+  <rect width="1200" height="1200" fill="url(#bg)"></rect>
+  <g opacity=".06" stroke="#e9e9ea" stroke-width="3" fill="none">
+    <path d="M-100 400 L300 0 M100 600 L500 200 M300 800 L700 400 M500 1000 L900 600 M700 1200 L1100 800 M900 1400 L1300 1000"></path>
+  </g>
+  <rect width="1200" height="1200" fill="url(#glow)"></rect>
+  <text x="70" y="98" font-family="Arial,Helvetica,sans-serif" font-size="30" letter-spacing="7" font-weight="700" fill="#9a9ba0" opacity=".8">MAGIC LANTERN</text>
+  
+  <g transform="translate(600,560)">
+    <circle r="185" fill="none" stroke="#e9e9ea" stroke-width="10"></circle>
+    <path transform="rotate(0)" d="M0 -170 L120 -70 L0 20 Z" fill="#e0564a" opacity=".85"></path><path transform="rotate(60)" d="M0 -170 L120 -70 L0 20 Z" fill="#b22319" opacity=".85"></path><path transform="rotate(120)" d="M0 -170 L120 -70 L0 20 Z" fill="#e0564a" opacity=".85"></path><path transform="rotate(180)" d="M0 -170 L120 -70 L0 20 Z" fill="#b22319" opacity=".85"></path><path transform="rotate(240)" d="M0 -170 L120 -70 L0 20 Z" fill="#e0564a" opacity=".85"></path><path transform="rotate(300)" d="M0 -170 L120 -70 L0 20 Z" fill="#b22319" opacity=".85"></path>
+    <circle r="52" fill="#0c0c0e"></circle>
+  </g>
+  <rect x="70" y="1058" width="312" height="60" rx="30" fill="#b22319"></rect><text x="105" y="1097" font-family="Arial,Helvetica,sans-serif" font-size="30" font-weight="700" letter-spacing="2" fill="#fff">PHOTOGRAPHY</text>
+  <rect x="0" y="1140" width="1200" height="60" fill="none"></rect>
+</svg>

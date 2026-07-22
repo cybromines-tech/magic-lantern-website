@@ -1,0 +1,29 @@
+---
+/**
+ * Mounts the <ml-scene> custom element. The definition is loaded once per page
+ * regardless of how many scenes are on it.
+ */
+interface Props {
+  variant?: 'hero' | 'orbit' | 'ambient';
+  class?: string;
+}
+
+const { variant = 'hero', class: className } = Astro.props;
+---
+
+<ml-scene variant={variant} class:list={['ml-scene', className]}></ml-scene>
+
+<style is:global>
+  .ml-scene {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+</style>
+
+<script>
+  import '../scripts/ml-scene';
+</script>

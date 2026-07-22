@@ -1,0 +1,335 @@
+/* ==========================================================================
+   Magic Lantern — design tokens + global base
+   Palette and type scale lifted verbatim from the source template.
+   ========================================================================== */
+
+:root {
+  /* Surfaces — darkest to lightest */
+  --ml-bg: #0f1012;
+  --ml-bg-alt: #131418;
+  --ml-surface: #17181c;
+  --ml-surface-hi: #1e2026;
+  --ml-panel: #1b1c21;
+  --ml-footer: #111214;
+
+  /* Ink */
+  --ml-ink: #f2f2f3;
+  --ml-ink-hi: #f6f6f7;
+  --ml-text: #c8c9cc;
+  --ml-muted: #a9aaae;
+  --ml-dim: #7d7e83;
+  --ml-faint: #6f7075;
+
+  /* Flame */
+  --ml-red: #b22319;
+  --ml-red-deep: #7c130f;
+  --ml-mono: #9a1f17;
+  --ml-flame: #e0564a;
+  --ml-flame-hi: #f07a6f;
+  --ml-blush: #f0a89f;
+  --ml-blush-soft: #f4b7ae;
+
+  /* Hairlines */
+  --ml-line: rgba(255, 255, 255, 0.07);
+  --ml-line-soft: rgba(255, 255, 255, 0.06);
+  --ml-line-strong: rgba(255, 255, 255, 0.18);
+
+  /* Type */
+  --font-display: 'Anton', 'Impact', sans-serif;
+  --font-ui: 'Sora', system-ui, sans-serif;
+  --font-body: 'Manrope', system-ui, sans-serif;
+  --font-script: 'Caveat', cursive;
+
+  /* Rhythm */
+  --shell: 1320px;
+  --shell-narrow: 1160px;
+  --gutter: clamp(20px, 4vw, 44px);
+  --section-y: clamp(72px, 9vw, 130px);
+  --nav-h: 76px;
+
+  --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* No `scroll-behavior: smooth` here on purpose. Lenis sets scrollTop
+   imperatively every frame; native smooth scrolling then re-interpolates each
+   of those writes, which reads as lag and stutter. Anchor links are smoothed
+   by Lenis in site.ts instead, and the reduced-motion block below restores
+   native smooth scrolling for the no-Lenis path. */
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--ml-bg);
+  color: var(--ml-ink);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  /* `clip`, not `hidden`: `hidden` makes the body a scroll container, which
+     Lenis then fights for ownership of the scroll position. */
+  overflow-x: clip;
+}
+
+a {
+  color: var(--ml-flame);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--ml-flame-hi);
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+::selection {
+  background: var(--ml-red);
+  color: #fff;
+}
+
+:focus-visible {
+  outline: 2px solid var(--ml-flame);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* --- Page transitions ---------------------------------------------------- */
+/* Body starts hidden and is revealed by site.ts, so a cross-page navigation
+   reads as one continuous fade rather than a white flash. */
+
+body {
+  opacity: 0;
+}
+
+body.ml-ready {
+  opacity: 1;
+  transition: opacity 0.4s ease;
+}
+
+body.ml-leaving {
+  opacity: 0;
+  transition: opacity 0.26s ease;
+}
+
+/* --- Motion -------------------------------------------------------------- */
+
+@keyframes mlUp {
+  from {
+    opacity: 0;
+    transform: translateY(26px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes mlDot {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.9;
+  }
+  50% {
+    transform: translateY(9px);
+    opacity: 0.3;
+  }
+}
+
+@keyframes mlPulse {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes mlMarquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+/* Elements tagged [data-reveal] are hidden by site.ts on load and released by
+   an IntersectionObserver. The no-JS fallback below keeps them visible. */
+[data-reveal] {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body {
+    opacity: 1 !important;
+    transition: none !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* --- Layout primitives --------------------------------------------------- */
+
+.shell {
+  width: 100%;
+  max-width: var(--shell);
+  margin: 0 auto;
+  padding-inline: var(--gutter);
+}
+
+.shell--narrow {
+  max-width: var(--shell-narrow);
+}
+
+.section {
+  position: relative;
+  padding-block: var(--section-y);
+}
+
+/* --- Type primitives ----------------------------------------------------- */
+
+.eyebrow {
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ml-flame);
+  margin: 0 0 16px;
+}
+
+.display {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(38px, 5.6vw, 76px);
+  line-height: 0.98;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  margin: 0;
+  color: var(--ml-ink);
+}
+
+.lede {
+  font-size: clamp(16px, 1.7vw, 20px);
+  line-height: 1.65;
+  color: var(--ml-text);
+  margin: 0;
+}
+
+/* --- Buttons ------------------------------------------------------------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: 15.5px;
+  padding: 17px 30px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: transform 0.2s, filter 0.2s, background 0.2s;
+}
+
+.btn--flame {
+  color: #fff;
+  background: linear-gradient(135deg, var(--ml-red), var(--ml-red-deep));
+  box-shadow: 0 18px 40px -14px rgba(178, 35, 25, 0.9);
+}
+
+.btn--flame:hover {
+  color: #fff;
+  transform: translateY(-2px);
+  filter: brightness(1.1);
+}
+
+.btn--ghost {
+  color: var(--ml-ink);
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--ml-line-strong);
+}
+
+.btn--ghost:hover {
+  color: var(--ml-ink);
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.btn--light {
+  color: var(--ml-red-deep);
+  background: #fff;
+  padding: 17px 32px;
+}
+
+.btn--light:hover {
+  color: var(--ml-red-deep);
+  transform: translateY(-2px);
+}
+
+.btn--outline-light {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.3);
+  padding: 17px 32px;
+}
+
+.btn--outline-light:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.22);
+}
+
+/* Underlined "All services →" style link */
+.link-arrow {
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: 14.5px;
+  color: var(--ml-flame);
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(224, 86, 74, 0.4);
+  align-self: flex-end;
+}
+
+.link-arrow:hover {
+  border-bottom-color: var(--ml-flame);
+}
+
+/* Section header: title on the left, link on the right */
+.section-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 20px;
+  margin-bottom: 52px;
+}
