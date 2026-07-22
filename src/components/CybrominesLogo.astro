@@ -1,0 +1,71 @@
+---
+/**
+ * Cybromines lockup — Magic Lantern's software development partner.
+ * Mark geometry and the violet→cyan gradient are taken from their own
+ * icon.svg, so the partner brand stays theirs rather than being restyled
+ * into Magic Lantern's crimson.
+ */
+interface Props {
+  /** Height of the mark in px; the wordmark scales from it. */
+  size?: number;
+  /** Omit the wordmark when the surrounding text already names them. */
+  markOnly?: boolean;
+  /** Gradients are referenced by id, so each instance on a page needs its own. */
+  uid?: string;
+  class?: string;
+}
+
+const { size = 26, markOnly = false, uid = 'a', class: className } = Astro.props;
+const gradientId = `cybro-grad-${uid}`;
+---
+
+<span class:list={['cybro', className]} style={`--mark: ${size}px`}>
+  <svg
+    class="cybro__mark"
+    viewBox="0 0 32 32"
+    fill="none"
+    aria-hidden="true"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <defs>
+      <linearGradient id={gradientId} x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#7c3aed"></stop>
+        <stop offset="100%" stop-color="#22d3ee"></stop>
+      </linearGradient>
+    </defs>
+    <path
+      d="M11 11 L22 13 L15 22 Z"
+      stroke={`url(#${gradientId})`}
+      stroke-width="1.5"
+      fill="none"
+      opacity="0.8"></path>
+    <circle cx="11" cy="11" r="2.8" fill={`url(#${gradientId})`}></circle>
+    <circle cx="22" cy="13" r="2.8" fill={`url(#${gradientId})`}></circle>
+    <circle cx="15" cy="22" r="2.8" fill={`url(#${gradientId})`}></circle>
+  </svg>
+  {!markOnly && <span class="cybro__word">Cybromines</span>}
+</span>
+
+<style>
+  .cybro {
+    display: inline-flex;
+    align-items: center;
+    gap: calc(var(--mark) * 0.34);
+  }
+
+  .cybro__mark {
+    height: var(--mark);
+    width: var(--mark);
+    flex: none;
+  }
+
+  .cybro__word {
+    font-family: var(--font-ui);
+    font-weight: 600;
+    font-size: calc(var(--mark) * 0.62);
+    letter-spacing: 0.02em;
+    line-height: 1;
+    white-space: nowrap;
+    color: var(--ml-ink);
+  }
+</style>

@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import MLScene from '../components/MLScene.astro';
+import CybrominesLogo from '../components/CybrominesLogo.astro';
 import { services, site } from '../data/site';
 
 const marqueeWords = [
@@ -58,6 +59,12 @@ const work = [
           <a href="/contact" class="btn btn--flame">Start your project →</a>
           <a href="/portfolio" class="btn btn--ghost">▶ Watch our work</a>
         </div>
+
+        <a href="/cybromines" class="partner heroIn">
+          <span class="partner__label">Software development partner</span>
+          <span class="partner__rule" aria-hidden="true"></span>
+          <CybrominesLogo size={24} uid="hero" />
+        </a>
       </div>
     </div>
 
@@ -218,9 +225,11 @@ const work = [
     pointer-events: none;
   }
 
+  /* Viewport-relative so the partner row fits without pushing the scroll cue
+     off screen on shorter laptops. The nav is 76px, hence the top floor. */
   .hero__inner {
     position: relative;
-    padding-block: 120px 90px;
+    padding-block: clamp(96px, 11vh, 124px) clamp(52px, 7vh, 82px);
     pointer-events: none; /* Let the pointer reach the scene; buttons opt back in. */
   }
 
@@ -299,6 +308,56 @@ const work = [
     animation-delay: 0.24s;
   }
 
+  /* Partner credit. Deliberately quiet — it sits below the calls to action and
+     must not compete with them for attention. */
+  .partner {
+    display: inline-flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: clamp(22px, 3.2vh, 38px);
+    padding: 8px 18px 8px 0;
+    border-radius: 999px;
+    pointer-events: auto;
+    color: var(--ml-muted);
+    transition: color 0.2s, opacity 0.2s;
+  }
+
+  .partner:hover {
+    color: var(--ml-ink);
+  }
+
+  .partner__label {
+    font-family: var(--font-ui);
+    font-weight: 600;
+    font-size: 11.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: inherit;
+  }
+
+  .partner__rule {
+    width: clamp(20px, 4vw, 46px);
+    height: 1px;
+    flex: none;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.22), rgba(124, 58, 237, 0.6));
+  }
+
+  .partner.heroIn {
+    animation-delay: 0.32s;
+  }
+
+  @media (max-width: 520px) {
+    .partner {
+      gap: 12px;
+      margin-top: 26px;
+    }
+
+    .partner__label {
+      font-size: 10.5px;
+      letter-spacing: 0.12em;
+    }
+  }
+
   .hero__scroll {
     position: absolute;
     bottom: 26px;
@@ -331,6 +390,31 @@ const work = [
     border-radius: 2px;
     background: var(--ml-flame);
     animation: mlDot 1.8s infinite;
+  }
+
+  /* Short laptops: the display type is sized off viewport *width*, so on a wide
+     but shallow screen the hero stack overflows and pushes the scroll cue below
+     the fold. Tighten the vertical rhythm rather than let it spill. */
+  @media (min-width: 940px) and (max-height: 800px) {
+    .hero__inner {
+      padding-block: 88px 44px;
+    }
+
+    .hero__title {
+      font-size: clamp(40px, 6vw, 92px);
+    }
+
+    .hero__badge {
+      margin-bottom: 20px;
+    }
+
+    .hero__lede {
+      margin: 20px 0 28px;
+    }
+
+    .partner {
+      margin-top: 20px;
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
