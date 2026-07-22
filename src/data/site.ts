@@ -61,6 +61,7 @@ export const navLinks: NavLink[] = [
   },
   { label: 'Work', href: '/portfolio', key: 'work' },
   { label: 'Team', href: '/team', key: 'team' },
+  { label: 'Cybromines', href: '/cybromines', key: 'cybromines' },
 ];
 
 export const socials = [
