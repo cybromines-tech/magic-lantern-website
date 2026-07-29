@@ -1,6 +1,5 @@
 ---
 import Base from '../layouts/Base.astro';
-import CybrominesLogo from '../components/CybrominesLogo.astro';
 import {
   cybromines,
   cybrominesServices,
@@ -25,7 +24,13 @@ import { site } from '../data/site';
       </p>
 
       <div class="chero__lockup heroIn">
-        <CybrominesLogo size={64} uid="hero" />
+        <img
+          class="chero__logo"
+          src="/assets/cybromines-logo.png"
+          alt="Cybromines — Invention is our Innovation"
+          width="543"
+          height="405"
+        />
       </div>
 
       <h1 class="chero__title heroIn">{cybromines.headline}</h1>
@@ -129,7 +134,15 @@ import { site } from '../data/site';
   <section class="ccta">
     <div class="ccta__inner" data-reveal>
       <div class="ccta__logo">
-        <CybrominesLogo size={40} uid="cta" />
+        <img
+          class="ccta__logoimg"
+          src="/assets/cybromines-logo.png"
+          alt="Cybromines"
+          width="543"
+          height="405"
+          loading="lazy"
+          decoding="async"
+        />
       </div>
       <h2 class="ccta__title">Need the software as well as the story?</h2>
       <p class="ccta__lede">
@@ -228,6 +241,12 @@ import { site } from '../data/site';
 
   .chero__lockup {
     margin-bottom: 26px;
+  }
+
+  .chero__logo {
+    display: block;
+    width: auto;
+    height: clamp(120px, 16vw, 190px);
   }
 
   .chero__title {
@@ -525,6 +544,12 @@ import { site } from '../data/site';
     display: flex;
     justify-content: center;
     margin-bottom: 26px;
+  }
+
+  .ccta__logoimg {
+    display: block;
+    width: auto;
+    height: clamp(90px, 12vw, 130px);
   }
 
   .ccta__title {
