@@ -31,9 +31,28 @@ const steps = [
   { step: 'STEP 05', title: 'Grow', desc: 'We measure, optimise and keep the momentum building month on month.' },
 ];
 
+const reels = [
+  {
+    tag: 'Social Reels',
+    title: 'Every Brand Has a Soul',
+    href: 'https://www.instagram.com/reel/Daavj7ZvLgd/?igsh=cDk1dnNtbXQ2ejVi',
+    preview: '/assets/reels/brand-film-preview.mp4',
+    full: '/assets/reels/brand-film.mp4',
+    poster: '/assets/reels/brand-film-poster.jpg',
+    aspect: 'landscape',
+  },
+  {
+    tag: 'Video Production',
+    title: 'Le Client',
+    href: 'https://www.instagram.com/reel/DAtPFqShxuw/?igsh=MXQ5ZDFjc2sxcWN2ZA==',
+    preview: '/assets/reels/le-client-preview.mp4',
+    full: '/assets/reels/le-client.mp4',
+    poster: '/assets/reels/le-client-poster.jpg',
+    aspect: 'portrait',
+  },
+];
+
 const work = [
-  { tag: 'Video Production', title: 'Brand Film', src: '/assets/covers/cover-video.svg' },
-  { tag: 'Social Reels', title: 'Campaign Series', src: '/assets/covers/cover-reel.svg' },
   { tag: 'Product Shoot', title: 'Studio Photography', src: '/assets/covers/cover-photo.svg' },
 ];
 ---
@@ -198,6 +217,40 @@ const work = [
 
       <div class="work__grid">
         {
+          reels.map((r) => (
+            <button
+              type="button"
+              class="tile tile--video"
+              data-reveal
+              data-reel-open
+              data-full={r.full}
+              data-poster={r.poster}
+              data-href={r.href}
+              data-aspect={r.aspect}
+              data-tag={r.tag}
+              data-title={r.title}
+            >
+              <video
+                class="tile__img"
+                src={r.preview}
+                poster={r.poster}
+                muted
+                loop
+                playsinline
+                preload="metadata"
+                aria-hidden="true"
+              />
+              <span class="tile__scrim" aria-hidden="true" />
+              <span class="tile__play" aria-hidden="true">▶</span>
+              <span class="tile__meta">
+                <span class="tile__tag">{r.tag}</span>
+                <span class="tile__title">{r.title}</span>
+              </span>
+              <span class="visually-hidden">Play reel with sound</span>
+            </button>
+          ))
+        }
+        {
           work.map((w) => (
             <a href="/portfolio" class="tile" data-reveal>
               <img class="tile__img" src={w.src} alt="" loading="lazy" decoding="async" />
@@ -209,6 +262,23 @@ const work = [
             </a>
           ))
         }
+      </div>
+    </div>
+
+    <div class="reelModal" data-reel-modal hidden>
+      <div class="reelModal__backdrop" data-reel-close></div>
+      <div class="reelModal__dialog" role="dialog" aria-modal="true" aria-label="Reel player">
+        <button type="button" class="reelModal__close" data-reel-close aria-label="Close">&times;</button>
+        <video class="reelModal__video" controls playsinline preload="none"></video>
+        <div class="reelModal__foot">
+          <div class="reelModal__info">
+            <span class="tile__tag" data-reel-tag></span>
+            <span class="reelModal__title" data-reel-title></span>
+          </div>
+          <a href="#" target="_blank" rel="noopener" class="btn btn--flame reelModal__cta" data-reel-link>
+            View on Instagram ↗
+          </a>
+        </div>
       </div>
     </div>
   </section>
@@ -227,6 +297,110 @@ const work = [
     </div>
   </section>
 </Base>
+
+<script>
+  /**
+   * Reel tile + modal. This bundled script evaluates once per session, so all
+   * page-specific wiring happens inside `astro:page-load`, which fires on the
+   * first load and after every client-side navigation. Document-level
+   * listeners are registered once and look up the current DOM when they fire.
+   */
+
+  let previewObserver: IntersectionObserver | null = null;
+
+  function reelModal(): HTMLElement | null {
+    return document.querySelector<HTMLElement>('[data-reel-modal]');
+  }
+
+  function previews(): HTMLVideoElement[] {
+    return Array.from(document.querySelectorAll<HTMLVideoElement>('[data-reel-open] video'));
+  }
+
+  /* Resumes only the previews that are actually in the viewport. */
+  function resumePreviews() {
+    for (const video of previews()) {
+      const rect = video.getBoundingClientRect();
+      if (rect.bottom > 0 && rect.top < window.innerHeight) video.play().catch(() => {});
+    }
+  }
+
+  function closeReel() {
+    const modal = reelModal();
+    if (!modal || modal.hidden) return;
+    modal.hidden = true;
+    document.documentElement.style.removeProperty('overflow');
+    modal.querySelector<HTMLVideoElement>('video')?.pause();
+    resumePreviews();
+  }
+
+  function openReel(tile: HTMLElement) {
+    const modal = reelModal();
+    if (!modal) return;
+    const full = modal.querySelector<HTMLVideoElement>('video');
+    if (!full) return;
+
+    const { full: src, poster, href, aspect, tag, title } = tile.dataset;
+    modal.querySelector('[data-reel-tag]')!.textContent = tag ?? '';
+    modal.querySelector('[data-reel-title]')!.textContent = title ?? '';
+    modal.querySelector<HTMLAnchorElement>('[data-reel-link]')!.href = href ?? '#';
+    modal
+      .querySelector('.reelModal__dialog')!
+      .classList.toggle('reelModal__dialog--portrait', aspect === 'portrait');
+
+    if (full.getAttribute('src') !== src) {
+      full.src = src ?? '';
+      full.poster = poster ?? '';
+    }
+
+    modal.hidden = false;
+    document.documentElement.style.overflow = 'hidden';
+    previews().forEach((v) => v.pause());
+
+    full.currentTime = 0;
+    full.muted = false;
+    full.volume = 1;
+    full.play().catch(() => {
+      /* If the browser refuses sound-on playback, the controls are visible
+         and one tap starts it. */
+    });
+  }
+
+  document.addEventListener('click', (e) => {
+    const target = e.target as Element | null;
+    const tile = target?.closest?.('[data-reel-open]') as HTMLElement | null;
+    if (tile) openReel(tile);
+    else if (target?.closest?.('[data-reel-close]')) closeReel();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeReel();
+  });
+
+  document.addEventListener('astro:page-load', () => {
+    const items = previews();
+    if (!items.length) return;
+
+    /* Muted inline previews only run while their tile is actually on screen. */
+    previewObserver = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          const video = entry.target as HTMLVideoElement;
+          if (entry.isIntersecting && reelModal()?.hidden !== false) video.play().catch(() => {});
+          else video.pause();
+        }
+      },
+      { threshold: 0.25 }
+    );
+    items.forEach((v) => previewObserver!.observe(v));
+  });
+
+  document.addEventListener('astro:before-swap', () => {
+    previewObserver?.disconnect();
+    previewObserver = null;
+    /* The modal (and its scroll lock) must not survive into the next page. */
+    closeReel();
+  });
+</script>
 
 <style>
   /* --- Hero --------------------------------------------------------------- */
@@ -816,6 +990,126 @@ const work = [
     font-family: var(--font-ui);
     font-weight: 700;
     font-size: 20px;
+    color: #fff;
+  }
+
+  /* --- Reel tile + modal --------------------------------------------------- */
+
+  .tile--video {
+    padding: 0;
+    cursor: pointer;
+    text-align: left;
+  }
+
+  .tile__play {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    font-size: 14px;
+    color: #fff;
+    background: rgba(15, 16, 18, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(6px);
+    transition: background 0.3s, transform 0.3s var(--ease-out);
+    pointer-events: none;
+  }
+
+  .tile--video:hover .tile__play {
+    background: rgba(224, 86, 74, 0.85);
+    transform: scale(1.08);
+  }
+
+  .reelModal {
+    position: fixed;
+    inset: 0;
+    z-index: 300; /* Above the nav (200). */
+    display: grid;
+    place-items: center;
+    padding: clamp(16px, 4vw, 48px);
+  }
+
+  /* `display: grid` above would otherwise beat the UA rule for [hidden]. */
+  .reelModal[hidden] {
+    display: none;
+  }
+
+  .reelModal__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(8, 8, 10, 0.86);
+    backdrop-filter: blur(8px);
+  }
+
+  .reelModal__dialog {
+    position: relative;
+    width: min(960px, 100%);
+    border-radius: 16px;
+    overflow: hidden;
+    background: var(--ml-surface);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 40px 90px rgba(0, 0, 0, 0.55);
+  }
+
+  .reelModal__video {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: #000;
+  }
+
+  /* Portrait reels get a narrow dialog; the viewport-height term keeps the
+     16:9-tall video plus the footer on screen on short windows. */
+  .reelModal__dialog--portrait {
+    width: min(400px, 100%, calc((100vh - 250px) * 9 / 16));
+  }
+
+  .reelModal__dialog--portrait .reelModal__video {
+    aspect-ratio: 9 / 16;
+  }
+
+  .reelModal__close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border-radius: 50%;
+    font-size: 22px;
+    line-height: 1;
+    color: #fff;
+    cursor: pointer;
+    background: rgba(15, 16, 18, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    transition: background 0.3s;
+  }
+
+  .reelModal__close:hover {
+    background: rgba(224, 86, 74, 0.85);
+  }
+
+  .reelModal__foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding: 16px 20px;
+  }
+
+  .reelModal__title {
+    display: block;
+    font-family: var(--font-ui);
+    font-weight: 700;
+    font-size: 18px;
     color: #fff;
   }
 
