@@ -316,6 +316,7 @@ const work = [
    */
 
   let previewObserver: IntersectionObserver | null = null;
+  let warmObserver: IntersectionObserver | null = null;
 
   function reelModal(): HTMLElement | null {
     return document.querySelector<HTMLElement>('[data-reel-modal]');
@@ -323,6 +324,23 @@ const work = [
 
   function previews(): HTMLVideoElement[] {
     return Array.from(document.querySelectorAll<HTMLVideoElement>('[data-reel-open] video'));
+  }
+
+  /* Calling play() on a cold video mid-scroll stalls the main thread for the
+     whole fetch + demuxer spin-up (measured at 0.4–1.2s per reel). Warm the
+     pipeline while the tile is still far below the fold: start the fetch and
+     run a muted play/pause so the decoder is initialised, making the
+     on-screen play() a cheap resume. */
+  function warmPreview(video: HTMLVideoElement) {
+    video.preload = 'auto';
+    video
+      .play()
+      .then(() => {
+        const rect = video.getBoundingClientRect();
+        const onScreen = rect.bottom > 0 && rect.top < window.innerHeight;
+        if (!onScreen) video.pause();
+      })
+      .catch(() => {});
   }
 
   /* Resumes only the previews that are actually in the viewport. */
@@ -401,11 +419,26 @@ const work = [
       { threshold: 0.25 }
     );
     items.forEach((v) => previewObserver!.observe(v));
+
+    warmObserver = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          warmObserver?.unobserve(entry.target);
+          warmPreview(entry.target as HTMLVideoElement);
+        }
+      },
+      /* Fires roughly a viewport-and-a-half before the tile is reached. */
+      { rootMargin: '0px 0px 1400px 0px' }
+    );
+    items.forEach((v) => warmObserver!.observe(v));
   });
 
   document.addEventListener('astro:before-swap', () => {
     previewObserver?.disconnect();
     previewObserver = null;
+    warmObserver?.disconnect();
+    warmObserver = null;
     /* The modal (and its scroll lock) must not survive into the next page. */
     closeReel();
   });
