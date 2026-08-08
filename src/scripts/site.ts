@@ -141,15 +141,49 @@ function pauseOffscreenAnimations() {
   targets.forEach((el) => io.observe(el));
 }
 
+/* -- Rotating payoff words -------------------------------------------------- */
+
+/** Timers belong to one page's DOM; they're cleared before the next swap. */
+let rotateTimers: number[] = [];
+
+function wordRotators() {
+  if (reduceMotion()) return; // The first word stays put.
+
+  document.querySelectorAll<HTMLElement>('[data-rotate]').forEach((rotator) => {
+    const words = Array.from(rotator.children) as HTMLElement[];
+    if (words.length < 2) return;
+
+    let index = 0;
+    rotateTimers.push(
+      window.setInterval(() => {
+        const current = words[index]!;
+        index = (index + 1) % words.length;
+        const next = words[index]!;
+
+        // Leave upward, so the incoming word appears to push the old one out.
+        current.classList.remove('is-active');
+        current.classList.add('is-leaving');
+        rotateTimers.push(
+          window.setTimeout(() => current.classList.remove('is-leaving'), 650)
+        );
+        next.classList.add('is-active');
+      }, 3200)
+    );
+  });
+}
+
 /* -- Lifecycle ------------------------------------------------------------- */
 
 // Fires on the first load and after every client-side navigation.
 document.addEventListener('astro:page-load', () => {
   reveals();
   pauseOffscreenAnimations();
+  wordRotators();
 });
 
 document.addEventListener('astro:before-swap', () => {
   observers.forEach((io) => io.disconnect());
   observers = [];
+  rotateTimers.forEach((id) => window.clearInterval(id));
+  rotateTimers = [];
 });

@@ -70,7 +70,16 @@ const work = [
         </p>
 
         <h1 class="hero__title heroIn">
-          Lights. Camera.<br /><span>Growth.</span>
+          <span class="hero__caps">Lights. Camera.</span><br />
+          {/* The animated words are decorative; the visually-hidden span gives
+              screen readers one stable headline. */}
+          <span class="hero__rotate" data-rotate aria-hidden="true">
+            <span class="hero__word is-active">Growth.</span>
+            <span class="hero__word">Magic.</span>
+            <span class="hero__word">Stories.</span>
+            <span class="hero__word">Impact.</span>
+          </span>
+          <span class="visually-hidden">Growth.</span>
         </h1>
 
         <p class="hero__lede lede heroIn">{site.description} One team, start to end.</p>
@@ -501,15 +510,75 @@ const work = [
     text-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
   }
 
+  /* A slow spotlight glint sweeps across the caps — lantern light passing
+     over marquee lettering. The base position shows the plain ink colour, so
+     with animations disabled the line simply reads white. */
+  .hero__caps {
+    color: transparent;
+    background-image: linear-gradient(
+      105deg,
+      var(--ml-ink-hi) 0%,
+      var(--ml-ink-hi) 40%,
+      #ffd9c4 47%,
+      #ffffff 50%,
+      #ffd9c4 53%,
+      var(--ml-ink-hi) 60%,
+      var(--ml-ink-hi) 100%
+    );
+    background-size: 320% 100%;
+    background-position: 100% 0;
+    -webkit-background-clip: text;
+    background-clip: text;
+    animation: mlShine 5.6s ease-in-out 1.2s infinite;
+  }
+
+  @keyframes mlShine {
+    /* Long hold, then one pass — a glint, not a strobe. */
+    0%,
+    52% {
+      background-position: 100% 0;
+    }
+    100% {
+      background-position: 0% 0;
+    }
+  }
+
   /* The payoff word abandons the uppercase system: a sweeping fashion italic
-     against the towering caps is the one deliberate glamour moment. */
-  .hero__title span {
+     against the towering caps is the one deliberate glamour moment. The stack
+     is an inline grid so every word occupies the same slot and the layout
+     never jumps as they trade places. */
+  .hero__rotate {
+    display: inline-grid;
+    white-space: nowrap;
+  }
+
+  .hero__word {
+    grid-area: 1 / 1;
     font-family: var(--font-accent);
     font-style: italic;
     font-weight: 600;
     text-transform: none;
     letter-spacing: 0;
     color: var(--ml-flame);
+    opacity: 0;
+    transform: translateY(0.3em);
+    filter: blur(7px);
+    transition:
+      opacity 0.6s var(--ease-out),
+      transform 0.6s var(--ease-out),
+      filter 0.6s var(--ease-out);
+  }
+
+  .hero__word.is-active {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+
+  .hero__word.is-leaving {
+    opacity: 0;
+    transform: translateY(-0.3em);
+    filter: blur(7px);
   }
 
   .hero__lede {
