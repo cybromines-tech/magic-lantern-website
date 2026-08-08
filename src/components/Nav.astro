@@ -108,6 +108,9 @@ const { active = '' } = Astro.props;
   }
 
   .nav__bar {
+    /* Full width, not shell-capped, so the brand lines up with the hero copy
+       now that the hero is full-bleed. */
+    max-width: none;
     height: var(--nav-h);
     display: flex;
     align-items: center;

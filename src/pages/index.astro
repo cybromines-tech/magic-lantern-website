@@ -63,7 +63,7 @@ const work = [
     <MLScene variant="hero" />
     <div class="hero__scrim" aria-hidden="true"></div>
 
-    <div class="hero__inner shell">
+    <div class="hero__inner">
       <div class="hero__copy">
         <p class="hero__badge heroIn">
           <span class="hero__pulse" aria-hidden="true"></span>{site.tagline}
@@ -423,12 +423,41 @@ const work = [
     pointer-events: none;
   }
 
-  /* Viewport-relative so the partner row fits without pushing the scroll cue
-     off screen on shorter laptops. The nav is 76px, hence the top floor. */
+  /* Full-bleed, not shell-capped: the copy starts at the left gutter and the
+     scene owns the right half, so wide screens read as filled edge to edge.
+     Vertical padding is viewport-relative so the partner row fits without
+     pushing the scroll cue off screen on shorter laptops. The nav is 76px,
+     hence the top floor. */
   .hero__inner {
     position: relative;
+    width: 100%;
+    /* The copy shouldn't hug the viewport edge: indent it a touch toward the
+       centre on wide screens, while narrow screens keep the plain gutter. */
+    padding-inline: max(var(--gutter), 6vw) var(--gutter);
     padding-block: clamp(96px, 11vh, 124px) clamp(52px, 7vh, 82px);
     pointer-events: none; /* Let the pointer reach the scene; buttons opt back in. */
+  }
+
+  /* The monogram centres itself in its canvas, so pinning the canvas to the
+     right half puts it in the middle of that half — clear of the copy. Below
+     900px the copy spans the full width again and the scene goes back to being
+     a full-bleed backdrop behind it. */
+  .hero :global(.ml-scene) {
+    inset: 0 0 0 auto;
+    width: 52%;
+    /* The scene's warm haze would otherwise end in a hard vertical line at the
+       canvas edge; feather it into the hero background instead. */
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 24%);
+    mask-image: linear-gradient(90deg, transparent, #000 24%);
+  }
+
+  @media (max-width: 900px) {
+    .hero :global(.ml-scene) {
+      inset: 0;
+      width: 100%;
+      -webkit-mask-image: none;
+      mask-image: none;
+    }
   }
 
   .hero__copy {
