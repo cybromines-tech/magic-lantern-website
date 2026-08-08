@@ -35,7 +35,10 @@
   --ml-line-strong: rgba(255, 255, 255, 0.18);
 
   /* Type */
-  --font-display: 'Anton', 'Impact', sans-serif;
+  --font-display: 'Bebas Neue', 'Anton', 'Impact', sans-serif;
+  /* The one place the uppercase system breaks: payoff words set in a
+     high-contrast fashion italic. */
+  --font-accent: 'Bodoni Moda', 'Didot', 'Bodoni MT', serif;
   --font-ui: 'Sora', system-ui, sans-serif;
   --font-body: 'Manrope', system-ui, sans-serif;
   --font-script: 'Caveat', cursive;

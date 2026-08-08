@@ -501,7 +501,14 @@ const work = [
     text-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
   }
 
+  /* The payoff word abandons the uppercase system: a sweeping fashion italic
+     against the towering caps is the one deliberate glamour moment. */
   .hero__title span {
+    font-family: var(--font-accent);
+    font-style: italic;
+    font-weight: 600;
+    text-transform: none;
+    letter-spacing: 0;
     color: var(--ml-flame);
   }
 
@@ -728,7 +735,11 @@ const work = [
     max-width: 960px;
   }
 
+  /* Echoes the hero's italic payoff word so the device reads as a system. */
   .intro__statement span {
+    font-family: var(--font-accent);
+    font-style: italic;
+    font-weight: 600;
     color: var(--ml-flame);
   }
 

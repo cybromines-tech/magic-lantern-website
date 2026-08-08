@@ -10,7 +10,8 @@
     "check": "astro check"
   },
   "dependencies": {
-    "@fontsource/anton": "^5.2.5",
+    "@fontsource/bebas-neue": "^5.3.0",
+    "@fontsource/bodoni-moda": "^5.3.0",
     "@fontsource/caveat": "^5.2.5",
     "@fontsource/manrope": "^5.2.5",
     "@fontsource/sora": "^5.2.5",
