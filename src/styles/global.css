@@ -56,11 +56,14 @@
   box-sizing: border-box;
 }
 
-/* No `scroll-behavior: smooth` here on purpose. Lenis sets scrollTop
-   imperatively every frame; native smooth scrolling then re-interpolates each
-   of those writes, which reads as lag and stutter. Anchor links are smoothed
-   by Lenis in site.ts instead, and the reduced-motion block below restores
-   native smooth scrolling for the no-Lenis path. */
+/* Scrolling is native — no `scroll-behavior: smooth` on the root, because the
+   ClientRouter's scroll restoration would then animate on every page swap.
+   Anchor links are smoothed in site.ts instead; `scroll-padding-top` keeps
+   their targets clear of the fixed nav. */
+
+html {
+  scroll-padding-top: 80px;
+}
 
 html,
 body {
@@ -73,8 +76,8 @@ body {
 }
 
 body {
-  /* `clip`, not `hidden`: `hidden` makes the body a scroll container, which
-     Lenis then fights for ownership of the scroll position. */
+  /* `clip`, not `hidden`: `hidden` turns the body into a scroll container,
+     which breaks sticky positioning and viewport-relative scrolling. */
   overflow-x: clip;
 }
 
@@ -114,6 +117,28 @@ svg {
   clip: rect(0 0 0 0);
   white-space: nowrap;
   border: 0;
+}
+
+/* --- First load ----------------------------------------------------------- */
+/* The page stays hidden until the DOM and fonts are ready, then fades in — so
+   the fade plays when there is actually something to see, not during the blank
+   loading phase. Both classes come from one inline script in Base.astro: if
+   scripts are disabled or fail, neither class is set and the page renders
+   normally, so it can never be left invisible. The body survives ClientRouter
+   swaps, so this runs exactly once per session. */
+
+@keyframes mlPageIn {
+  from {
+    opacity: 0;
+  }
+}
+
+html.ml-js body:not(.ml-ready) {
+  opacity: 0;
+}
+
+html.ml-js body.ml-ready {
+  animation: mlPageIn 0.8s ease-out both;
 }
 
 /* --- Page transitions ---------------------------------------------------- */

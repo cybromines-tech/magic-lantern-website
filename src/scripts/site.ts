@@ -1,6 +1,8 @@
 /**
- * Site-wide behaviour: inertial scrolling, scroll-triggered reveals and the
- * animated stat counters.
+ * Site-wide behaviour: scroll-triggered reveals and the animated stat
+ * counters. Scrolling itself is native — the compositor owns it, so it stays
+ * smooth even while the WebGL scene or page hydration is busy on the main
+ * thread.
  *
  * Navigation is handled by Astro's <ClientRouter>, which swaps the document in
  * place. This module is a bundled script, so it evaluates exactly once for the
@@ -11,32 +13,11 @@
 
 const reduceMotion = () => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
 
-/* -- Inertial scrolling ---------------------------------------------------- */
+/* -- Anchor links ----------------------------------------------------------- */
 
-type LenisInstance = import('lenis').default;
-
-let lenis: LenisInstance | null = null;
-
-async function initSmoothScroll() {
-  if (reduceMotion() || lenis) return;
-
-  const { default: Lenis } = await import('lenis');
-  lenis = new Lenis({
-    duration: 1.05,
-    smoothWheel: true,
-    syncTouch: false,
-    wheelMultiplier: 1,
-    easing: (t: number) => 1 - Math.pow(1 - t, 3),
-  });
-
-  const raf = (time: number) => {
-    lenis?.raf(time);
-    requestAnimationFrame(raf);
-  };
-  requestAnimationFrame(raf);
-}
-
-// Delegated on `document`, so it keeps working across page swaps.
+/* The fixed-nav offset comes from `scroll-padding-top` in global.css, which
+   applies to both this handler and native anchor jumps.
+   Delegated on `document`, so it keeps working across page swaps. */
 document.addEventListener('click', (e) => {
   const target = e.target as Element | null;
   const link = target?.closest?.('a[href^="#"]') as HTMLAnchorElement | null;
@@ -45,8 +26,8 @@ document.addEventListener('click', (e) => {
   const el = document.querySelector(hash);
   if (!el) return;
   e.preventDefault();
-  if (lenis) lenis.scrollTo(el as HTMLElement, { offset: -80 });
-  else el.scrollIntoView({ behavior: 'smooth' });
+  // scrollIntoView ignores prefers-reduced-motion on its own; honour it here.
+  el.scrollIntoView({ behavior: reduceMotion() ? 'auto' : 'smooth' });
 });
 
 /* -- Reveals + stat counters ---------------------------------------------- */
@@ -166,21 +147,9 @@ function pauseOffscreenAnimations() {
 document.addEventListener('astro:page-load', () => {
   reveals();
   pauseOffscreenAnimations();
-  // The incoming page is a different height; Lenis caches the old one.
-  lenis?.resize();
 });
 
 document.addEventListener('astro:before-swap', () => {
   observers.forEach((io) => io.disconnect());
   observers = [];
 });
-
-document.addEventListener('astro:after-swap', () => {
-  /* Astro has already set the scroll position for the new page. Lenis keeps its
-     own animated target, so without this it would smoothly scroll back to
-     wherever the previous page left off. */
-  lenis?.resize();
-  lenis?.scrollTo(window.scrollY, { immediate: true, force: true });
-});
-
-void initSmoothScroll();

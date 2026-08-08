@@ -15,9 +15,6 @@ import '@fontsource/manrope/600.css';
 import '@fontsource/manrope/700.css';
 import '@fontsource/caveat/600.css';
 import '@fontsource/caveat/700.css';
-/* Ships `html.lenis { height: auto }` and the overscroll rules Lenis needs;
-   without it Lenis adds its class but none of the behaviour it implies. */
-import 'lenis/dist/lenis.css';
 import '../styles/global.css';
 
 interface Props {
@@ -56,6 +53,32 @@ const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url).href;
         blanks the page. Cross-fades via the View Transitions API where it is
         supported, and falls back to a plain instant navigation elsewhere. */}
     <ClientRouter />
+
+    {/* First-load reveal. Hides the page until the DOM and fonts are ready,
+        then `.ml-ready` plays the fade-in (see global.css). Hide and reveal
+        live in this one inline script on purpose: if it never runs, the page
+        is simply visible from the start. The timeout is a failsafe so a hung
+        font request can't keep the site hidden. */}
+    <script is:inline>
+      (function () {
+        var d = document;
+        d.documentElement.classList.add('ml-js');
+        var ready = function () {
+          if (d.body) d.body.classList.add('ml-ready');
+          else d.addEventListener('DOMContentLoaded', ready, { once: true });
+        };
+        Promise.all([
+          d.fonts && d.fonts.ready ? d.fonts.ready : Promise.resolve(),
+          new Promise(function (resolve) {
+            if (d.readyState !== 'loading') resolve();
+            else d.addEventListener('DOMContentLoaded', resolve, { once: true });
+          }),
+        ]).then(function () {
+          requestAnimationFrame(ready);
+        });
+        setTimeout(ready, 2000);
+      })();
+    </script>
   </head>
 
   <body>
