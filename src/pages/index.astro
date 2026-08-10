@@ -88,6 +88,50 @@ const pupaFacts = [
   { label: 'Powered by', value: 'Elephant Tales, his Kochi-based creative studio' },
   { label: 'Our chapter', value: 'Pupa Season 20 · Giby Farm, Thrissur' },
 ];
+
+/* Three reel slots under the photo slider. Slots without a local preview/full/
+   poster set yet just link out to Instagram; once those files land in
+   /assets/pupa/, swap the slot to the same shape as `reels` above and it will
+   open in the in-page reel modal instead. */
+type PupaReel = {
+  title: string;
+  tag: string;
+  href: string;
+  preview?: string;
+  full?: string;
+  poster?: string;
+  aspect?: 'landscape' | 'portrait';
+};
+
+const pupaReels: (PupaReel | null)[] = [
+  {
+    title: 'Pupa Season 20 — highlight reel',
+    tag: 'Instagram Reel',
+    href: 'https://www.instagram.com/reel/DPskLN5jDaY/?igsh=MTN5OWRkZGF6bW5kYg==',
+    preview: '/assets/pupa/reel-01-preview.mp4',
+    full: '/assets/pupa/reel-01.mp4',
+    poster: '/assets/pupa/reel-01-poster.jpg',
+    aspect: 'portrait',
+  },
+  {
+    title: 'Pupa Season 20 — the room reacts',
+    tag: 'Instagram Reel',
+    href: pupaPost,
+    preview: '/assets/pupa/reel-02-preview.mp4',
+    full: '/assets/pupa/reel-02.mp4',
+    poster: '/assets/pupa/reel-02-poster.jpg',
+    aspect: 'portrait',
+  },
+  {
+    title: 'Pupa Season 20 — into character',
+    tag: 'Instagram Reel',
+    href: pupaPost,
+    preview: '/assets/pupa/reel-03-preview.mp4',
+    full: '/assets/pupa/reel-03.mp4',
+    poster: '/assets/pupa/reel-03-poster.jpg',
+    aspect: 'portrait',
+  },
+];
 ---
 
 <Base title={site.name} active="home">
@@ -273,6 +317,54 @@ const pupaFacts = [
           →
         </button>
       </div>
+
+      <p class="eyebrow pupa__reelsEyebrow" data-reveal>On set</p>
+      <div class="pupa__reels" data-reveal>
+        {
+          pupaReels.map((r) =>
+            r ? (
+              r.preview && r.full && r.poster ? (
+                <button
+                  type="button"
+                  class="tile tile--video"
+                  data-reel-open
+                  data-full={r.full}
+                  data-poster={r.poster}
+                  data-href={r.href}
+                  data-aspect={r.aspect ?? 'landscape'}
+                  data-tag={r.tag}
+                  data-title={r.title}
+                >
+                  <video
+                    class="tile__img"
+                    src={r.preview}
+                    poster={r.poster}
+                    muted
+                    loop
+                    playsinline
+                    preload="metadata"
+                    aria-hidden="true"
+                  />
+                  <span class="tile__scrim" aria-hidden="true" />
+                  <span class="tile__play" aria-hidden="true">▶</span>
+                  <span class="visually-hidden">Play video with sound</span>
+                </button>
+              ) : (
+                <a href={r.href} target="_blank" rel="noopener" class="tile tile--video-link">
+                  <span class="tile__reelIcon" aria-hidden="true">▶</span>
+                  <span class="tile__meta">
+                    <span class="tile__tag">{r.tag}</span>
+                    <span class="tile__title">{r.title}</span>
+                  </span>
+                  <span class="visually-hidden">Opens on Instagram</span>
+                </a>
+              )
+            ) : (
+              <div class="tile tile--pending">Video coming soon</div>
+            )
+          )
+        }
+      </div>
     </div>
   </section>
 
@@ -434,6 +526,8 @@ const pupaFacts = [
 
   let previewObserver: IntersectionObserver | null = null;
   let warmObserver: IntersectionObserver | null = null;
+  let pupaAutoTimer: ReturnType<typeof setInterval> | null = null;
+  let pupaResumeTimer: ReturnType<typeof setTimeout> | null = null;
 
   function reelModal(): HTMLElement | null {
     return document.querySelector<HTMLElement>('[data-reel-modal]');
@@ -523,12 +617,53 @@ const pupaFacts = [
     track.scrollTo({ left: index * step, behavior: 'smooth' });
   }
 
+  /* Pupa slider autoplay: advance one slide at a time, looping back to the
+     start once the track bottoms out. Paused on any user interaction and
+     resumed a few seconds after it ends, so it never fights a manual scroll. */
+  function pupaTrack(): HTMLElement | null {
+    return document.querySelector<HTMLElement>('[data-pupa-track]');
+  }
+
+  function advancePupa() {
+    const track = pupaTrack();
+    const slide = track?.querySelector<HTMLElement>('.pupa__slide');
+    if (!track || !slide) return;
+    const step = slide.offsetWidth + (parseFloat(getComputedStyle(track).columnGap) || 0);
+    const atEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - step / 2;
+    track.scrollTo({ left: atEnd ? 0 : track.scrollLeft + step, behavior: 'smooth' });
+  }
+
+  function startPupaAuto() {
+    if (pupaAutoTimer || !pupaTrack()) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    pupaAutoTimer = setInterval(advancePupa, 3200);
+  }
+
+  function stopPupaAuto() {
+    if (!pupaAutoTimer) return;
+    clearInterval(pupaAutoTimer);
+    pupaAutoTimer = null;
+  }
+
+  /* Stop immediately, then restart after a breather once interaction settles. */
+  function pausePupaAuto() {
+    stopPupaAuto();
+    if (pupaResumeTimer) clearTimeout(pupaResumeTimer);
+    pupaResumeTimer = setTimeout(startPupaAuto, 4000);
+  }
+
   document.addEventListener('click', (e) => {
     const target = e.target as Element | null;
     const prev = target?.closest?.('[data-pupa-prev]');
     const next = target?.closest?.('[data-pupa-next]');
-    if (prev) return slidePupa(prev, -1);
-    if (next) return slidePupa(next, 1);
+    if (prev) {
+      pausePupaAuto();
+      return slidePupa(prev, -1);
+    }
+    if (next) {
+      pausePupaAuto();
+      return slidePupa(next, 1);
+    }
     const tile = target?.closest?.('[data-reel-open]') as HTMLElement | null;
     if (tile) openReel(tile);
     else if (target?.closest?.('[data-reel-close]')) closeReel();
@@ -567,6 +702,15 @@ const pupaFacts = [
       { rootMargin: '0px 0px 1400px 0px' }
     );
     items.forEach((v) => warmObserver!.observe(v));
+
+    const pupaSlider = document.querySelector<HTMLElement>('[data-pupa-slider]');
+    if (pupaSlider) {
+      pupaSlider.addEventListener('pointerenter', stopPupaAuto);
+      pupaSlider.addEventListener('pointerleave', startPupaAuto);
+      pupaSlider.addEventListener('touchstart', pausePupaAuto, { passive: true });
+      pupaSlider.addEventListener('wheel', pausePupaAuto, { passive: true });
+      startPupaAuto();
+    }
   });
 
   document.addEventListener('astro:before-swap', () => {
@@ -574,6 +718,11 @@ const pupaFacts = [
     previewObserver = null;
     warmObserver?.disconnect();
     warmObserver = null;
+    stopPupaAuto();
+    if (pupaResumeTimer) {
+      clearTimeout(pupaResumeTimer);
+      pupaResumeTimer = null;
+    }
     /* The modal (and its scroll lock) must not survive into the next page. */
     closeReel();
   });
@@ -1174,10 +1323,25 @@ const pupaFacts = [
     right: -8px;
   }
 
+  .pupa__reelsEyebrow {
+    margin-top: 48px;
+    margin-bottom: 18px;
+  }
+
+  .pupa__reels {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
+
   @media (max-width: 860px) {
     .pupa__intro {
       grid-template-columns: 1fr;
       gap: 28px;
+    }
+
+    .pupa__reels {
+      grid-template-columns: 1fr;
     }
   }
 
@@ -1448,6 +1612,57 @@ const pupaFacts = [
   .tile--video:hover .tile__play {
     background: rgba(224, 86, 74, 0.85);
     transform: scale(1.08);
+  }
+
+  /* Reel slot with an Instagram href but no local preview/full/poster yet —
+     opens the post in a new tab instead of the in-page modal. */
+  .tile--video-link {
+    display: flex;
+    align-items: flex-end;
+    background: radial-gradient(120% 120% at 30% 15%, rgba(224, 86, 74, 0.22), transparent 60%),
+      var(--ml-surface);
+  }
+
+  .tile__reelIcon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    display: grid;
+    place-items: center;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    font-size: 20px;
+    color: #fff;
+    background: rgba(15, 16, 18, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(6px);
+    transform: translate(-50%, -50%);
+    transition: background 0.3s, transform 0.3s var(--ease-out);
+  }
+
+  .tile--video-link:hover .tile__reelIcon {
+    background: rgba(224, 86, 74, 0.85);
+    transform: translate(-50%, -50%) scale(1.08);
+  }
+
+  /* Empty slot — reserves the grid position until a video is ready. */
+  .tile--pending {
+    display: grid;
+    place-items: center;
+    aspect-ratio: 4 / 5;
+    border-style: dashed;
+    border-color: rgba(255, 255, 255, 0.14);
+    font-family: var(--font-ui);
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.3);
+  }
+
+  .tile--pending:hover {
+    border-color: rgba(255, 255, 255, 0.14);
   }
 
   .reelModal {
