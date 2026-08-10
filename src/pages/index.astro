@@ -55,6 +55,39 @@ const reels = [
 const work = [
   { tag: 'Product Shoot', title: 'Studio Photography', src: '/assets/covers/cover-photo.svg' },
 ];
+
+/* PUPA × Magic Lantern slider.
+   Photos are the carousel from the Instagram post below (Pupa Season 20).
+   To add videos later, append `type: 'video'` slides with the same fields as
+   the reels above — they plug into the existing reel modal automatically:
+   { type: 'video', title: 'Workshop film',
+     preview: '/assets/pupa/xxx-preview.mp4', full: '/assets/pupa/xxx.mp4',
+     poster: '/assets/pupa/xxx-poster.jpg', href: 'https://instagram.com/…',
+     aspect: 'landscape' } */
+const pupaPost = 'https://www.instagram.com/p/DQBPkU2gWqm/';
+
+type PupaItem = {
+  type: 'photo' | 'video';
+  title: string;
+  src?: string;
+  preview?: string;
+  full?: string;
+  poster?: string;
+  href?: string;
+  aspect?: 'landscape' | 'portrait';
+};
+
+const pupaGallery: PupaItem[] = Array.from({ length: 11 }, (_, i) => ({
+  type: 'photo',
+  title: `Pupa Season 20 at Giby Farm, Thrissur — moment ${i + 1}`,
+  src: `/assets/pupa/pupa-${String(i + 1).padStart(2, '0')}.jpg`,
+}));
+
+const pupaFacts = [
+  { label: 'Led by', value: 'Tharun Moorthy — director of Operation Java, Saudi Vellakka & Thudarum' },
+  { label: 'Powered by', value: 'Elephant Tales, his Kochi-based creative studio' },
+  { label: 'Our chapter', value: 'Pupa Season 20 · Giby Farm, Thrissur' },
+];
 ---
 
 <Base title={site.name} active="home">
@@ -155,6 +188,90 @@ const work = [
             </a>
           ))
         }
+      </div>
+    </div>
+  </section>
+
+  <!-- PUPA × MAGIC LANTERN -->
+  <section class="pupa">
+    <div class="shell">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow" data-reveal>Collaboration</p>
+          <h2 class="display" data-reveal>Pupa &times;<br />Magic Lantern</h2>
+        </div>
+        <a href={pupaPost} target="_blank" rel="noopener" class="link-arrow" data-reveal>
+          See it on Instagram ↗
+        </a>
+      </div>
+
+      <div class="pupa__intro">
+        <p class="pupa__desc" data-reveal>
+          PUPA is the celebrated acting workshop founded by film director
+          <strong>Tharun Moorthy</strong> and his creative studio Elephant Tales — a gathering
+          where aspiring actors train, break open and become. Over twenty of its alumni walked
+          straight into <em>Thudarum</em>. Magic Lantern collaborated with PUPA to conduct its
+          Thrissur chapter at Giby Farm, and we captured every frame of it.
+        </p>
+
+        <ul class="pupa__facts" data-reveal>
+          {
+            pupaFacts.map((f) => (
+              <li class="pupa__fact">
+                <span class="pupa__factLabel">{f.label}</span>
+                <span class="pupa__factValue">{f.value}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <div class="pupa__slider" data-pupa-slider data-reveal>
+        <button type="button" class="pupa__nav pupa__nav--prev" data-pupa-prev aria-label="Previous photo">
+          ←
+        </button>
+
+        <div class="pupa__track" data-pupa-track tabindex="0" aria-label="Pupa Season 20 photo slider">
+          {
+            pupaGallery.map((g) =>
+              g.type === 'video' ? (
+                <button
+                  type="button"
+                  class="tile tile--video pupa__slide"
+                  data-reel-open
+                  data-full={g.full}
+                  data-poster={g.poster}
+                  data-href={g.href}
+                  data-aspect={g.aspect}
+                  data-tag="Pupa Season 20"
+                  data-title={g.title}
+                >
+                  <video
+                    class="tile__img"
+                    src={g.preview}
+                    poster={g.poster}
+                    muted
+                    loop
+                    playsinline
+                    preload="metadata"
+                    aria-hidden="true"
+                  />
+                  <span class="tile__scrim" aria-hidden="true" />
+                  <span class="tile__play" aria-hidden="true">▶</span>
+                  <span class="visually-hidden">Play video with sound</span>
+                </button>
+              ) : (
+                <figure class="tile pupa__slide">
+                  <img class="tile__img" src={g.src} alt={g.title} loading="lazy" decoding="async" />
+                </figure>
+              )
+            )
+          }
+        </div>
+
+        <button type="button" class="pupa__nav pupa__nav--next" data-pupa-next aria-label="Next photo">
+          →
+        </button>
       </div>
     </div>
   </section>
@@ -392,8 +509,26 @@ const work = [
     });
   }
 
+  /* Pupa slider arrows: scroll the snap track by one slide. */
+  function slidePupa(button: Element, dir: number) {
+    const track = button
+      .closest('[data-pupa-slider]')
+      ?.querySelector<HTMLElement>('[data-pupa-track]');
+    const slide = track?.querySelector<HTMLElement>('.pupa__slide');
+    if (!track || !slide) return;
+    const step = slide.offsetWidth + (parseFloat(getComputedStyle(track).columnGap) || 0);
+    /* Absolute target from the nearest slide index, so rapid clicks accumulate
+       cleanly instead of compounding mid-animation offsets. */
+    const index = Math.round(track.scrollLeft / step) + dir;
+    track.scrollTo({ left: index * step, behavior: 'smooth' });
+  }
+
   document.addEventListener('click', (e) => {
     const target = e.target as Element | null;
+    const prev = target?.closest?.('[data-pupa-prev]');
+    const next = target?.closest?.('[data-pupa-next]');
+    if (prev) return slidePupa(prev, -1);
+    if (next) return slidePupa(next, 1);
     const tile = target?.closest?.('[data-reel-open]') as HTMLElement | null;
     if (tile) openReel(tile);
     else if (target?.closest?.('[data-reel-close]')) closeReel();
@@ -906,6 +1041,155 @@ const work = [
     font-weight: 600;
     font-size: 13.5px;
     color: var(--ml-flame);
+  }
+
+  /* --- Pupa × Magic Lantern ----------------------------------------------- */
+
+  .pupa {
+    position: relative;
+    padding-block: var(--section-y);
+    background: var(--ml-bg);
+    border-top: 1px solid var(--ml-line-soft);
+  }
+
+  .pupa__intro {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    gap: clamp(28px, 5vw, 72px);
+    align-items: start;
+    margin-bottom: 48px;
+  }
+
+  .pupa__desc {
+    font-size: clamp(16px, 1.7vw, 19px);
+    line-height: 1.7;
+    color: var(--ml-text);
+    margin: 0;
+    max-width: 640px;
+  }
+
+  .pupa__desc strong {
+    color: var(--ml-ink);
+  }
+
+  /* Echoes the site-wide italic accent. */
+  .pupa__desc em {
+    font-family: var(--font-accent);
+    font-style: italic;
+    color: var(--ml-flame);
+  }
+
+  .pupa__facts {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 0;
+  }
+
+  .pupa__fact {
+    display: grid;
+    gap: 6px;
+    padding: 16px 0;
+    border-top: 1px solid var(--ml-line);
+  }
+
+  .pupa__fact:last-child {
+    border-bottom: 1px solid var(--ml-line);
+  }
+
+  .pupa__factLabel {
+    font-family: var(--font-ui);
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ml-flame);
+  }
+
+  .pupa__factValue {
+    font-size: 14.5px;
+    line-height: 1.55;
+    color: var(--ml-muted);
+  }
+
+  /* Instagram-style slider: square slides in a scroll-snap track, arrows on
+     the sides. The photos are square, so slides keep a 1:1 ratio. */
+  .pupa__slider {
+    position: relative;
+  }
+
+  .pupa__track {
+    display: flex;
+    gap: 18px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    /* Room for the hover lift so it isn't clipped by the scroll container. */
+    padding-block: 6px;
+  }
+
+  .pupa__track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .pupa__track .pupa__slide {
+    flex: 0 0 auto;
+    width: clamp(240px, 27vw, 380px);
+    aspect-ratio: 1 / 1;
+    margin: 0;
+    scroll-snap-align: start;
+  }
+
+  .pupa__nav {
+    position: absolute;
+    top: 50%;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    width: 46px;
+    height: 46px;
+    padding: 0;
+    transform: translateY(-50%);
+    border-radius: 50%;
+    font-size: 18px;
+    line-height: 1;
+    color: #fff;
+    cursor: pointer;
+    background: rgba(15, 16, 18, 0.65);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(6px);
+    transition: background 0.3s, transform 0.2s var(--ease-out);
+  }
+
+  .pupa__nav:hover {
+    background: rgba(224, 86, 74, 0.85);
+  }
+
+  .pupa__nav--prev {
+    left: -8px;
+  }
+
+  .pupa__nav--next {
+    right: -8px;
+  }
+
+  @media (max-width: 860px) {
+    .pupa__intro {
+      grid-template-columns: 1fr;
+      gap: 28px;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .pupa__track .pupa__slide {
+      width: min(78vw, 340px);
+    }
+
+    .pupa__nav {
+      width: 40px;
+      height: 40px;
+    }
   }
 
   /* --- Stats -------------------------------------------------------------- */
