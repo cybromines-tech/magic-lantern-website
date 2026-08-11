@@ -13,7 +13,8 @@ import type * as THREE_NS from 'three';
 
 type Variant = 'hero' | 'orbit' | 'ambient';
 
-const MONOGRAM_URL = '/assets/logo-mark.svg';
+/* Mark only — the wordmark is deliberately left out of the 3D scene. */
+const MONOGRAM_URL = '/assets/ml-mark.svg';
 
 let spriteTexture: THREE_NS.CanvasTexture | null = null;
 

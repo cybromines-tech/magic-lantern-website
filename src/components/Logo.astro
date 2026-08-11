@@ -1,53 +1,27 @@
 ---
 /**
- * Full logo lockup: flame mark + letterspaced "Magic Lantern" wordmark.
- * Rendered as markup rather than a flat SVG so the wordmark uses the real
- * Anton webfont and stays selectable/searchable.
+ * The Magic Lantern logo, converted 1:1 from `ML new Logo.ai` (artwork
+ * untouched — flame mark + "ft. MAGIC LANTERN ENTERTAINMENTS" lockup).
  */
-import LogoMark from './LogoMark.astro';
-
 interface Props {
-  /** Cap height of the mark in px; the wordmark scales from it. */
+  /** Rendered height of the logo in px. */
   size?: number;
   class?: string;
 }
 
-const { size = 38, class: className } = Astro.props;
+const { size = 56, class: className } = Astro.props;
 ---
 
-<span class:list={['logo', className]} style={`--mark: ${size}px`}>
-  <LogoMark class="logo__mark" fill="var(--ml-flame)" />
-  <span class="logo__word">Magic Lantern</span>
-</span>
+<img
+  class:list={['logo', className]}
+  src="/assets/ml-logo.svg"
+  alt="ft. Magic Lantern Entertainments"
+  style={`height: ${size}px`}
+/>
 
 <style>
   .logo {
-    display: inline-flex;
-    align-items: center;
-    gap: calc(var(--mark) * 0.3);
-    color: var(--ml-ink);
-  }
-
-  /* :global — the mark is rendered by the child <LogoMark>, which this
-     component's scope hash does not reach. */
-  .logo :global(.logo__mark) {
-    height: var(--mark);
-    /* An explicit ratio — `width: auto` on an SVG in a flex row collapses. */
-    aspect-ratio: 102.3 / 182.4;
+    display: block;
     width: auto;
-    flex: none;
-    filter: drop-shadow(0 0 calc(var(--mark) * 0.35) rgba(224, 86, 74, 0.45));
-  }
-
-  .logo__word {
-    font-family: var(--font-display);
-    font-size: calc(var(--mark) * 0.42);
-    line-height: 1;
-    letter-spacing: 0.24em;
-    /* Optical correction: letter-spacing pads the right edge of the last glyph. */
-    margin-right: -0.24em;
-    text-transform: uppercase;
-    white-space: nowrap;
-    color: currentColor;
   }
 </style>

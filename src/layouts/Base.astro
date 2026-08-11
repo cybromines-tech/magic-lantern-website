@@ -48,7 +48,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url).href;
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
-    <meta property="og:image" content={new URL('/assets/logo-white.svg', Astro.site ?? Astro.url).href} />
+    <meta property="og:image" content={new URL('/assets/ml-logo.svg', Astro.site ?? Astro.url).href} />
     <meta name="twitter:card" content="summary_large_image" />
 
     {/* Swaps the document in place instead of reloading, so navigating never

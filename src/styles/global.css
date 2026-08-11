@@ -3,6 +3,72 @@
    Palette and type scale lifted verbatim from the source template.
    ========================================================================== */
 
+/* --- Brand type: LEMON MILK (self-hosted, /public/fonts) ------------------ */
+
+@font-face {
+  font-family: 'Lemon Milk';
+  src: url('/fonts/LEMONMILK-Light.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Lemon Milk';
+  src: url('/fonts/LEMONMILK-LightItalic.otf') format('opentype');
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Lemon Milk';
+  src: url('/fonts/LEMONMILK-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Lemon Milk';
+  src: url('/fonts/LEMONMILK-RegularItalic.otf') format('opentype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Lemon Milk';
+  src: url('/fonts/LEMONMILK-Medium.otf') format('opentype');
+  font-weight: 500 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Lemon Milk';
+  src: url('/fonts/LEMONMILK-MediumItalic.otf') format('opentype');
+  font-weight: 500 600;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Lemon Milk';
+  src: url('/fonts/LEMONMILK-Bold.otf') format('opentype');
+  font-weight: 700 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Lemon Milk';
+  src: url('/fonts/LEMONMILK-BoldItalic.otf') format('opentype');
+  font-weight: 700 800;
+  font-style: italic;
+  font-display: swap;
+}
+
 :root {
   /* Surfaces — darkest to lightest */
   --ml-bg: #0f1012;
