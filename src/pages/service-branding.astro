@@ -1,10 +1,49 @@
 ---
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
-import ContentPending from '../components/ContentPending.astro';
+import ServiceDetail from '../components/ServiceDetail.astro';
+
+const overview = [
+  'Your brand is the story people tell about you when you are not in the room. At Magic Lantern we shape that story deliberately — a distinctive identity, a consistent voice and a visual system that makes you unmistakable at every touchpoint.',
+  'Every engagement begins with listening. We sit with your ambitions, your audience and the market you compete in, then distil a positioning that is honestly yours. Only then do we design: logo, colour, typography and imagery built to carry one clear idea from a business card to a billboard without losing its character along the way.',
+  'Because we script, shoot, design and market under one roof, the identity we craft never stays on paper. The same team that defines your brand carries it into films, photographs, campaigns and websites — so every expression of your business, online and off, stays true to the original spark. The result is a brand that is not just recognised, but remembered.',
+];
+
+const deliverables = [
+  'Logo & visual identity',
+  'Brand strategy & positioning',
+  'Brand guidelines',
+  'Graphic design & collateral',
+  'Packaging & print design',
+  'Social media brand kits',
+];
+
+const steps = [
+  {
+    title: 'Discover',
+    desc: 'Workshops and research into your business, audience and competitors — the raw material of a strong identity.',
+  },
+  {
+    title: 'Define',
+    desc: 'We distil the findings into a positioning, a message and a personality your brand can own.',
+  },
+  {
+    title: 'Design',
+    desc: 'The identity takes shape: logo, colour, type and imagery refined through honest feedback rounds.',
+  },
+  {
+    title: 'Deliver',
+    desc: 'Guidelines and production-ready assets, plus rollout across every surface your audience meets.',
+  },
+];
 ---
 
 <Base title="Branding" description="Identity, graphic design and brand systems that make you unmistakable." active="services">
   <PageHero eyebrow="Service 01" title="Branding" lede="Identity, graphic design and brand systems that make you unmistakable." />
-  <ContentPending note="The full Branding service page is in production." />
+  <ServiceDetail
+    overview={overview}
+    deliverablesLede="Top-notch branding solutions through expert design, video, photography and marketing — unique, compelling visuals that communicate your brand's message and help you stand out."
+    deliverables={deliverables}
+    steps={steps}
+  />
 </Base>

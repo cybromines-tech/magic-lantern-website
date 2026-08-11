@@ -1,0 +1,239 @@
+---
+/**
+ * Shared body for the four service pages: an overview essay, a deliverables
+ * grid, a numbered process, and the standard contact CTA. Content comes in as
+ * props so each page stays a pure content file.
+ */
+import { site } from '../data/site';
+
+interface Step {
+  title: string;
+  desc: string;
+}
+
+interface Props {
+  /** Overview paragraphs; the first is set large as the section statement. */
+  overview: string[];
+  /** One-line intro above the deliverables grid. */
+  deliverablesLede: string;
+  deliverables: string[];
+  steps: Step[];
+}
+
+const { overview, deliverablesLede, deliverables, steps } = Astro.props;
+const [statement, ...paragraphs] = overview;
+---
+
+<!-- OVERVIEW -->
+<section class="overview">
+  <div class="shell shell--narrow">
+    <p class="eyebrow" data-reveal>The service</p>
+    <p class="overview__statement" data-reveal>{statement}</p>
+    {paragraphs.map((p) => <p class="overview__body" data-reveal>{p}</p>)}
+  </div>
+</section>
+
+<!-- DELIVERABLES -->
+<section class="deliver">
+  <div class="shell shell--narrow">
+    <p class="eyebrow" data-reveal>What we deliver</p>
+    <p class="deliver__lede" data-reveal>{deliverablesLede}</p>
+    <ul class="deliver__grid" data-reveal>
+      {deliverables.map((d) => <li class="deliver__item">{d}</li>)}
+    </ul>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section class="process">
+  <div class="shell shell--narrow">
+    <p class="eyebrow" data-reveal>How we work</p>
+    <ol class="process__grid">
+      {
+        steps.map((s, i) => (
+          <li class="process__step" data-reveal>
+            <span class="process__num">{String(i + 1).padStart(2, '0')}</span>
+            <h3 class="process__title">{s.title}</h3>
+            <p class="process__desc">{s.desc}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+  <div class="cta__inner" data-reveal>
+    <p class="eyebrow">Ready when you are</p>
+    <h2 class="cta__title">Tell us where your brand needs to go — we'll light the way.</h2>
+    <div class="cta__actions">
+      <a href="/contact" class="btn btn--flame">Start your project →</a>
+      <a href={site.whatsapp} target="_blank" rel="noopener" class="btn btn--ghost">
+        Chat on WhatsApp
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* --- Overview ----------------------------------------------------------- */
+
+  .overview {
+    padding-block: var(--section-y);
+    background: var(--ml-bg);
+  }
+
+  .overview__statement {
+    font-family: var(--font-ui);
+    font-weight: 500;
+    font-size: clamp(20px, 2.6vw, 30px);
+    line-height: 1.5;
+    letter-spacing: -0.01em;
+    color: var(--ml-ink);
+    margin: 0 0 28px;
+    max-width: 900px;
+  }
+
+  .overview__body {
+    font-size: clamp(16px, 1.7vw, 19px);
+    line-height: 1.75;
+    color: var(--ml-text);
+    max-width: 780px;
+    margin: 0 0 22px;
+  }
+
+  .overview__body:last-child {
+    margin-bottom: 0;
+  }
+
+  /* --- Deliverables ------------------------------------------------------- */
+
+  .deliver {
+    padding-block: var(--section-y);
+    background: var(--ml-bg-alt);
+  }
+
+  .deliver__lede {
+    font-size: clamp(16px, 1.7vw, 19px);
+    line-height: 1.7;
+    color: var(--ml-text);
+    max-width: 760px;
+    margin: 0 0 34px;
+  }
+
+  .deliver__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .deliver__item {
+    padding: 18px 20px;
+    border-radius: 14px;
+    background: var(--ml-surface);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    font-family: var(--font-ui);
+    font-weight: 600;
+    font-size: 14.5px;
+    letter-spacing: 0.02em;
+    color: var(--ml-ink);
+  }
+
+  /* --- Process ------------------------------------------------------------ */
+
+  .process {
+    padding-block: var(--section-y);
+    background: var(--ml-bg);
+  }
+
+  .process__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 22px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: step;
+  }
+
+  .process__num {
+    font-family: var(--font-ui);
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.14em;
+    color: var(--ml-flame);
+  }
+
+  .process__title {
+    font-family: var(--font-ui);
+    font-weight: 700;
+    font-size: 19px;
+    color: var(--ml-ink);
+    margin: 10px 0 10px;
+  }
+
+  .process__desc {
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--ml-muted);
+    margin: 0;
+  }
+
+  /* --- CTA ---------------------------------------------------------------- */
+
+  .cta {
+    position: relative;
+    padding: clamp(72px, 9vw, 132px) var(--gutter);
+    background: radial-gradient(120% 130% at 75% 18%, #3a1f1c 0%, #1c1d22 46%, #0f1012 100%);
+    overflow: hidden;
+  }
+
+  .cta__inner {
+    position: relative;
+    max-width: 780px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .cta__title {
+    font-family: var(--font-ui);
+    font-weight: 700;
+    font-size: clamp(26px, 4vw, 46px);
+    line-height: 1.22;
+    letter-spacing: -0.02em;
+    margin: 0 0 36px;
+    color: var(--ml-ink-hi);
+  }
+
+  .cta__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    justify-content: center;
+  }
+
+  /* --- Responsive --------------------------------------------------------- */
+
+  @media (max-width: 900px) {
+    .process__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 700px) {
+    .deliver__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .deliver__grid,
+    .process__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

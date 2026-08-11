@@ -1,10 +1,49 @@
 ---
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
-import ContentPending from '../components/ContentPending.astro';
+import ServiceDetail from '../components/ServiceDetail.astro';
+
+const overview = [
+  'Attention online is earned, not bought — and keeping it takes strategy. Magic Lantern plans, produces and manages digital campaigns that put your brand in front of the right people at the right moment, then proves it with numbers.',
+  'We start with an audit of where you stand: your search visibility, your social presence, your content and your competitors. From there we build a customised strategy across SEO, social media marketing, content creation and online advertising — each channel given a clear job to do, each campaign given a measurable goal.',
+  'What sets us apart is the content engine behind the strategy. The films, photographs and designs your campaigns run on are made by the same in-house team, so creative and media never pull in different directions. We monitor performance continuously, use data-driven insights to optimise what works and cut what does not, and report in plain language you can act on. Trust Magic Lantern to elevate your online presence and drive results you can actually measure.',
+];
+
+const deliverables = [
+  'Search engine optimisation',
+  'Social media marketing',
+  'Content creation & calendars',
+  'Paid ads — Google & Meta',
+  'Campaign analytics & reporting',
+  'Online reputation building',
+];
+
+const steps = [
+  {
+    title: 'Audit',
+    desc: 'A clear-eyed review of your current visibility, audience and competition sets the baseline.',
+  },
+  {
+    title: 'Strategise',
+    desc: 'Channels, content and budgets are mapped to your goals — every campaign gets a measurable target.',
+  },
+  {
+    title: 'Launch',
+    desc: 'Our in-house team produces the creative and puts campaigns live across search and social.',
+  },
+  {
+    title: 'Optimise',
+    desc: 'We track the data, double down on what performs and report the results in plain language.',
+  },
+];
 ---
 
 <Base title="Digital Marketing" description="SEO, social, content and paid campaigns driven by real data." active="services">
   <PageHero eyebrow="Service 02" title="Digital Marketing" lede="SEO, social, content and paid campaigns driven by real data." />
-  <ContentPending note="The full Digital Marketing service page is in production." />
+  <ServiceDetail
+    overview={overview}
+    deliverablesLede="Customised strategies built around your specific needs — boosting your brand's visibility and engagement with data-driven insight at every step."
+    deliverables={deliverables}
+    steps={steps}
+  />
 </Base>

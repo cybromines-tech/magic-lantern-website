@@ -1,10 +1,49 @@
 ---
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
-import ContentPending from '../components/ContentPending.astro';
+import ServiceDetail from '../components/ServiceDetail.astro';
+
+const overview = [
+  'Moving pictures are our first language. Magic Lantern was built by filmmakers, and it shows in everything we shoot — commercials with a point of view, corporate films people actually watch, product imagery that sells and reels made for the scroll.',
+  'We run the full pipeline in-house. Writers shape the script, directors plan the shoot, and our crew handles camera, light and sound on set. In post, editors, colourists and sound designers finish the picture to broadcast standard. One team carries your idea from the first draft to the final cut, which keeps the vision intact and the timeline honest.',
+  'Every deliverable is cut for the screen it will live on: a thirty-second spot for television, a founder film for your website, crisp product photography for the catalogue, vertical reels for Instagram and YouTube. Whether it is a scripted story, a campaign film or a full-day photoshoot, we bring cinema-grade craft to work of every size — and we treat a small brand’s first shoot with the same care as a television commercial.',
+];
+
+const deliverables = [
+  'Television commercials',
+  'Corporate videos',
+  'Product photography & video',
+  'Sales & marketing videos',
+  'Scripted videos',
+  'Social media reels',
+];
+
+const steps = [
+  {
+    title: 'Develop',
+    desc: 'Concept, script and storyboard — the film is designed on paper before a camera rolls.',
+  },
+  {
+    title: 'Prepare',
+    desc: 'Casting, locations, crew and kit locked in a schedule that respects your time and budget.',
+  },
+  {
+    title: 'Shoot',
+    desc: 'Production day: direction, camera, lighting and sound handled end to end by our crew.',
+  },
+  {
+    title: 'Finish',
+    desc: 'Edit, colour grade, sound design and delivery in every format your channels need.',
+  },
+];
 ---
 
 <Base title="Video and Photoshoot" description="Commercials, corporate films, product shoots and social reels." active="services">
   <PageHero eyebrow="Service 04" title="Video and Photoshoot" lede="Commercials, corporate films, product shoots and social reels." />
-  <ContentPending note="The full Video and Photoshoot service page is in production." />
+  <ServiceDetail
+    overview={overview}
+    deliverablesLede="Television commercials, corporate video, product photography and videography, sales and marketing films, scripted video and social media reels — produced end to end."
+    deliverables={deliverables}
+    steps={steps}
+  />
 </Base>

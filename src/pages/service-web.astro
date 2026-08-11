@@ -1,10 +1,49 @@
 ---
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
-import ContentPending from '../components/ContentPending.astro';
+import ServiceDetail from '../components/ServiceDetail.astro';
+
+const overview = [
+  'Your website is your hardest-working storefront — open every hour, met by every customer. Magic Lantern designs and builds sites that are responsive, fast and genuinely beautiful, then stays with you from the first wireframe to deployment and beyond.',
+  'We treat functionality, aesthetics and performance as one problem, not three. Layouts are designed around your visitors and what you need them to do; builds are tested across phones, tablets and desktops; pages are tuned to load quickly and rank well. The result is a seamless experience that represents your brand properly and turns visits into enquiries.',
+  'Because the same house also handles your branding, photography and marketing, everything on the site fits: the identity carries through, the imagery is shot for the layout it lives in, and the content is written to be found. From single landing pages to full company sites and online stores, we deliver end-to-end — design, development, content and launch — so you get one accountable team and a web presence that pulls its weight.',
+];
+
+const deliverables = [
+  'UI/UX design',
+  'Responsive development',
+  'Business sites & landing pages',
+  'E-commerce & CMS builds',
+  'Speed & SEO optimisation',
+  'Hosting, care & updates',
+];
+
+const steps = [
+  {
+    title: 'Plan',
+    desc: 'Goals, sitemap and content are agreed up front, so the build serves your business — not the other way round.',
+  },
+  {
+    title: 'Design',
+    desc: 'Wireframes grow into polished, on-brand screens you approve before a line of code is written.',
+  },
+  {
+    title: 'Build',
+    desc: 'Clean, responsive development, tested across devices and tuned for speed and search.',
+  },
+  {
+    title: 'Launch',
+    desc: 'We deploy, monitor and maintain — your site stays fast, secure and up to date after go-live.',
+  },
+];
 ---
 
 <Base title="Website Development" description="Responsive, fast, beautiful sites — from design to deployment." active="services">
   <PageHero eyebrow="Service 03" title="Website Development" lede="Responsive, fast, beautiful sites — from design to deployment." />
-  <ContentPending note="The full Website Development service page is in production." />
+  <ServiceDetail
+    overview={overview}
+    deliverablesLede="Comprehensive website development — responsive, user-friendly sites with the functionality, aesthetics and performance to represent your brand and engage your audience."
+    deliverables={deliverables}
+    steps={steps}
+  />
 </Base>
