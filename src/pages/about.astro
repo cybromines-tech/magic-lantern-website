@@ -1,10 +1,171 @@
 ---
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
-import ContentPending from '../components/ContentPending.astro';
+import { site } from '../data/site';
+
+const traits = ['Creativity', 'Critical thinking', 'Cultural awareness'];
+const formats = ['Visual media', 'Written content', 'Digital formats'];
 ---
 
-<Base title="About Us" description="A media house built by storytellers — scripting, shooting, designing and marketing under one roof." active="about">
-  <PageHero eyebrow="Who we are" title="About Us" lede="A media house built by storytellers — scripting, shooting, designing and marketing under one roof." />
-  <ContentPending note="The full About story is still being written. In the meantime, tell us what you are building." />
+<Base
+  title="About Us"
+  description="A media house built by storytellers — scripting, shooting, designing and marketing under one roof."
+  active="about"
+>
+  <PageHero
+    eyebrow="Who we are"
+    title="About Us"
+    lede="A media house built by storytellers — scripting, shooting, designing and marketing under one roof."
+  />
+
+  <!-- STORY -->
+  <section class="story">
+    <div class="shell shell--narrow">
+      <p class="eyebrow" data-reveal>Our story</p>
+      <p class="story__statement" data-reveal>
+        <strong>Magic Lantern</strong> is a vibrant and dynamic media house founded by students of
+        renowned Sree Kerala Varma College. Our journey began with a shared vision to illuminate
+        stories that inspire, educate, and entertain. At Magic Lantern, we believe in the power of
+        storytelling to transform perspectives and connect people.
+      </p>
+    </div>
+  </section>
+
+  <!-- APPROACH -->
+  <section class="approach">
+    <div class="shell shell--narrow">
+      <p class="eyebrow" data-reveal>How we work</p>
+      <p class="approach__desc" data-reveal>
+        Our diverse team brings a rich blend of creativity, critical thinking, and cultural
+        awareness, making us adept at crafting compelling narratives across various media
+        platforms.
+      </p>
+      <ul class="chipRow" data-reveal>
+        {traits.map((t) => <li class="chip">{t}</li>)}
+      </ul>
+
+      <p class="approach__desc approach__desc--formats" data-reveal>
+        Whether it&rsquo;s through visual media, written content, or innovative digital formats,
+        our work reflects our commitment to quality and originality.
+      </p>
+      <ul class="chipRow" data-reveal>
+        {formats.map((f) => <li class="chip">{f}</li>)}
+      </ul>
+    </div>
+  </section>
+
+  <!-- JOIN -->
+  <section class="join">
+    <div class="join__inner" data-reveal>
+      <p class="eyebrow" data-reveal>Join the journey</p>
+      <h2 class="join__title" data-reveal>
+        Join us on this illuminating journey as we continue to explore and celebrate the art of
+        storytelling.
+      </h2>
+      <div class="join__actions" data-reveal>
+        <a href="/contact" class="btn btn--flame">Start your project →</a>
+        <a href={site.whatsapp} target="_blank" rel="noopener" class="btn btn--ghost">
+          Chat on WhatsApp
+        </a>
+      </div>
+    </div>
+  </section>
 </Base>
+
+<style>
+  /* --- Story ---------------------------------------------------------------- */
+
+  .story {
+    padding-block: var(--section-y);
+    background: var(--ml-bg);
+  }
+
+  .story__statement {
+    font-family: var(--font-ui);
+    font-weight: 500;
+    font-size: clamp(20px, 2.6vw, 30px);
+    line-height: 1.5;
+    letter-spacing: -0.01em;
+    color: var(--ml-ink);
+    margin: 0;
+    max-width: 900px;
+  }
+
+  .story__statement strong {
+    color: var(--ml-flame);
+    font-weight: 700;
+  }
+
+  /* --- Approach --------------------------------------------------------------- */
+
+  .approach {
+    padding-block: var(--section-y);
+    background: var(--ml-bg-alt);
+  }
+
+  .approach__desc {
+    font-size: clamp(16px, 1.7vw, 19px);
+    line-height: 1.7;
+    color: var(--ml-text);
+    max-width: 760px;
+    margin: 0 0 26px;
+  }
+
+  .approach__desc--formats {
+    margin-top: 48px;
+  }
+
+  .chipRow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .chip {
+    padding: 9px 18px;
+    border-radius: 999px;
+    background: rgba(178, 35, 25, 0.14);
+    border: 1px solid rgba(224, 86, 74, 0.32);
+    font-family: var(--font-ui);
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    color: var(--ml-blush);
+  }
+
+  /* --- Join ------------------------------------------------------------------- */
+
+  .join {
+    position: relative;
+    padding: clamp(72px, 9vw, 132px) var(--gutter);
+    background: radial-gradient(120% 130% at 75% 18%, #3a1f1c 0%, #1c1d22 46%, #0f1012 100%);
+    overflow: hidden;
+  }
+
+  .join__inner {
+    position: relative;
+    max-width: 780px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .join__title {
+    font-family: var(--font-ui);
+    font-weight: 700;
+    font-size: clamp(26px, 4vw, 46px);
+    line-height: 1.22;
+    letter-spacing: -0.02em;
+    margin: 0 0 36px;
+    color: var(--ml-ink-hi);
+  }
+
+  .join__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    justify-content: center;
+  }
+</style>
