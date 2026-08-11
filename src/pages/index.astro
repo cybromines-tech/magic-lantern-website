@@ -49,10 +49,15 @@ const reels = [
     poster: '/assets/reels/le-client-poster.jpg',
     aspect: 'portrait',
   },
-];
-
-const work = [
-  { tag: 'Product Shoot', title: 'Studio Photography', src: '/assets/covers/cover-photo.svg' },
+  {
+    tag: 'Food & Product Shoot',
+    title: 'Hearts and Plates',
+    href: 'https://www.instagram.com/reel/DSFP1Lrkd74/?igsh=N2l1anVxZDBpeWIw',
+    preview: '/assets/reels/hearts-and-plates-preview.mp4',
+    full: '/assets/reels/hearts-and-plates.mp4',
+    poster: '/assets/reels/hearts-and-plates-poster.jpg',
+    aspect: 'portrait',
+  },
 ];
 
 /* PUPA × Magic Lantern slider.
@@ -411,7 +416,8 @@ const pupaReels: (PupaReel | null)[] = [
 
       <div class="work__grid">
         {
-          reels.map((r) => (
+          /* Cap to 3 — more reels move into a dedicated "more work" section later. */
+          reels.slice(0, 3).map((r) => (
             <button
               type="button"
               class="tile tile--video"
@@ -442,18 +448,6 @@ const pupaReels: (PupaReel | null)[] = [
               </span>
               <span class="visually-hidden">Play reel with sound</span>
             </button>
-          ))
-        }
-        {
-          work.map((w) => (
-            <a href="/portfolio" class="tile" data-reveal>
-              <img class="tile__img" src={w.src} alt="" loading="lazy" decoding="async" />
-              <span class="tile__scrim" aria-hidden="true" />
-              <span class="tile__meta">
-                <span class="tile__tag">{w.tag}</span>
-                <span class="tile__title">{w.title}</span>
-              </span>
-            </a>
           ))
         }
       </div>
