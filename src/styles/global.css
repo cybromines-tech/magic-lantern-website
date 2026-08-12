@@ -100,14 +100,13 @@
   --ml-line-soft: rgba(255, 255, 255, 0.06);
   --ml-line-strong: rgba(255, 255, 255, 0.18);
 
-  /* Type */
-  --font-display: 'Bebas Neue', 'Anton', 'Impact', sans-serif;
-  /* The one place the uppercase system breaks: payoff words set in a
-     high-contrast fashion italic. */
-  --font-accent: 'Bodoni Moda', 'Didot', 'Bodoni MT', serif;
-  --font-ui: 'Sora', system-ui, sans-serif;
-  --font-body: 'Manrope', system-ui, sans-serif;
-  --font-script: 'Caveat', cursive;
+  /* Type — the whole site is set in LEMON MILK; the role split is kept so
+     weights/sizes can still be tuned per role. */
+  --font-display: 'Lemon Milk', 'Impact', sans-serif;
+  --font-accent: 'Lemon Milk', sans-serif;
+  --font-ui: 'Lemon Milk', system-ui, sans-serif;
+  --font-body: 'Lemon Milk', system-ui, sans-serif;
+  --font-script: 'Lemon Milk', sans-serif;
 
   /* Rhythm */
   --shell: 1320px;
@@ -310,8 +309,8 @@ html.ml-js body.ml-ready {
 .eyebrow {
   font-family: var(--font-ui);
   font-weight: 700;
-  font-size: 13px;
-  letter-spacing: 0.18em;
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--ml-flame);
   margin: 0 0 16px;
@@ -320,8 +319,8 @@ html.ml-js body.ml-ready {
 .display {
   font-family: var(--font-display);
   font-weight: 400;
-  font-size: clamp(38px, 5.6vw, 76px);
-  line-height: 0.98;
+  font-size: clamp(23px, 3.4vw, 46px);
+  line-height: 1.08;
   letter-spacing: 0.01em;
   text-transform: uppercase;
   margin: 0;
@@ -329,8 +328,8 @@ html.ml-js body.ml-ready {
 }
 
 .lede {
-  font-size: clamp(16px, 1.7vw, 20px);
-  line-height: 1.65;
+  font-size: clamp(11.5px, 1.2vw, 14px);
+  line-height: 1.75;
   color: var(--ml-text);
   margin: 0;
 }
@@ -343,7 +342,7 @@ html.ml-js body.ml-ready {
   gap: 10px;
   font-family: var(--font-ui);
   font-weight: 600;
-  font-size: 15.5px;
+  font-size: 11.5px;
   padding: 17px 30px;
   border-radius: 999px;
   border: 1px solid transparent;
@@ -401,7 +400,7 @@ html.ml-js body.ml-ready {
 .link-arrow {
   font-family: var(--font-ui);
   font-weight: 600;
-  font-size: 14.5px;
+  font-size: 11px;
   color: var(--ml-flame);
   padding-bottom: 6px;
   border-bottom: 1px solid rgba(224, 86, 74, 0.4);
