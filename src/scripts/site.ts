@@ -172,6 +172,192 @@ function wordRotators() {
   });
 }
 
+/* -- Reel tiles + modal ---------------------------------------------------- */
+
+/**
+ * Drives every <VideoTile> and the single <ReelModal> on a page. Tiles in
+ * `poster` mode hold nothing but an image, so the observers below simply find
+ * no work to do — the cost is paid only by pages that loop previews in place.
+ */
+
+let previewObserver: IntersectionObserver | null = null;
+let warmObserver: IntersectionObserver | null = null;
+
+function reelModal(): HTMLElement | null {
+  return document.querySelector<HTMLElement>('[data-reel-modal]');
+}
+
+function previews(): HTMLVideoElement[] {
+  return Array.from(document.querySelectorAll<HTMLVideoElement>('[data-reel-open] video'));
+}
+
+/* Calling play() on a cold video mid-scroll stalls the main thread for the
+   whole fetch + demuxer spin-up (measured at 0.4–1.2s per reel). Warm the
+   pipeline while the tile is still far below the fold: start the fetch and
+   run a muted play/pause so the decoder is initialised, making the
+   on-screen play() a cheap resume. */
+function warmPreview(video: HTMLVideoElement) {
+  video.preload = 'auto';
+  video
+    .play()
+    .then(() => {
+      const rect = video.getBoundingClientRect();
+      const onScreen = rect.bottom > 0 && rect.top < window.innerHeight;
+      if (!onScreen) video.pause();
+    })
+    .catch(() => {});
+}
+
+/* Resumes only the previews that are actually in the viewport. */
+function resumePreviews() {
+  for (const video of previews()) {
+    const rect = video.getBoundingClientRect();
+    if (rect.bottom > 0 && rect.top < window.innerHeight) video.play().catch(() => {});
+  }
+}
+
+function closeReel() {
+  const modal = reelModal();
+  if (!modal || modal.hidden) return;
+  modal.hidden = true;
+  document.documentElement.style.removeProperty('overflow');
+  modal.querySelector<HTMLVideoElement>('video')?.pause();
+  /* Dropping the src is the only way to stop an embed's audio — we cannot
+     reach into a cross-origin frame to pause it. */
+  const frame = modal.querySelector<HTMLIFrameElement>('[data-reel-frame]');
+  if (frame) {
+    frame.hidden = true;
+    frame.removeAttribute('src');
+    frame.style.removeProperty('height');
+  }
+  resumePreviews();
+}
+
+/**
+ * Instagram's embed measures itself and posts the result to its parent — the
+ * message its own embeds.js listens for. A landscape reel is far shorter than
+ * a portrait one, so without this the frame keeps its fallback height and
+ * leaves a white void under the video.
+ */
+window.addEventListener('message', (e) => {
+  if (e.origin !== 'https://www.instagram.com') return;
+  const frame = reelModal()?.querySelector<HTMLIFrameElement>('[data-reel-frame]');
+  if (!frame || frame.hidden || e.source !== frame.contentWindow) return;
+
+  let payload: unknown;
+  try {
+    payload = typeof e.data === 'string' ? JSON.parse(e.data) : e.data;
+  } catch {
+    return; // Not one of ours; Instagram posts other traffic through here too.
+  }
+
+  const message = payload as { type?: string; details?: { height?: unknown } };
+  if (message?.type !== 'MEASURE') return;
+  const height = Number(message.details?.height);
+  if (!Number.isFinite(height) || height <= 0) return;
+  /* Still capped, so a tall post cannot push the footer off screen. */
+  frame.style.height = `min(${Math.ceil(height)}px, 74vh)`;
+});
+
+function openReel(tile: HTMLElement) {
+  const modal = reelModal();
+  if (!modal) return;
+  const full = modal.querySelector<HTMLVideoElement>('video');
+  const frame = modal.querySelector<HTMLIFrameElement>('[data-reel-frame]');
+  if (!full) return;
+
+  const { full: src, embed, poster, href, aspect, tag, title } = tile.dataset;
+  modal.querySelector('[data-reel-tag]')!.textContent = tag ?? '';
+  modal.querySelector('[data-reel-title]')!.textContent = title ?? '';
+  modal.querySelector<HTMLAnchorElement>('[data-reel-link]')!.href = href ?? '#';
+
+  const dialog = modal.querySelector('.reelModal__dialog')!;
+  dialog.classList.toggle('reelModal__dialog--embed', !!embed);
+  /* An embed brings its own chrome, so it gets its own dialog size rather
+     than the portrait video one. */
+  dialog.classList.toggle('reelModal__dialog--portrait', !embed && aspect === 'portrait');
+
+  modal.hidden = false;
+  document.documentElement.style.overflow = 'hidden';
+  previews().forEach((v) => v.pause());
+
+  if (embed) {
+    full.pause();
+    full.hidden = true;
+    if (frame) {
+      frame.hidden = false;
+      /* Back to the CSS fallback until this post reports its own height. */
+      frame.style.removeProperty('height');
+      /* Instagram does not autoplay a cross-origin embed; the visitor taps
+         play once inside the frame. */
+      frame.src = `https://www.instagram.com/reel/${embed}/embed/`;
+    }
+    return;
+  }
+
+  if (frame) {
+    frame.hidden = true;
+    frame.removeAttribute('src');
+  }
+  full.hidden = false;
+
+  if (full.getAttribute('src') !== src) {
+    full.src = src ?? '';
+    full.poster = poster ?? '';
+  }
+
+  full.currentTime = 0;
+  full.muted = false;
+  full.volume = 1;
+  full.play().catch(() => {
+    /* If the browser refuses sound-on playback, the controls are visible
+       and one tap starts it. */
+  });
+}
+
+/* Delegated on `document`, so these survive page swaps. */
+document.addEventListener('click', (e) => {
+  const target = e.target as Element | null;
+  const tile = target?.closest?.('[data-reel-open]') as HTMLElement | null;
+  if (tile) openReel(tile);
+  else if (target?.closest?.('[data-reel-close]')) closeReel();
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeReel();
+});
+
+function reelPreviews() {
+  const items = previews();
+  if (!items.length) return;
+
+  /* Muted inline previews only run while their tile is actually on screen. */
+  previewObserver = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        const video = entry.target as HTMLVideoElement;
+        if (entry.isIntersecting && reelModal()?.hidden !== false) video.play().catch(() => {});
+        else video.pause();
+      }
+    },
+    { threshold: 0.25 }
+  );
+  items.forEach((v) => previewObserver!.observe(v));
+
+  warmObserver = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        warmObserver?.unobserve(entry.target);
+        warmPreview(entry.target as HTMLVideoElement);
+      }
+    },
+    /* Fires roughly a viewport-and-a-half before the tile is reached. */
+    { rootMargin: '0px 0px 1400px 0px' }
+  );
+  items.forEach((v) => warmObserver!.observe(v));
+}
+
 /* -- Lifecycle ------------------------------------------------------------- */
 
 // Fires on the first load and after every client-side navigation.
@@ -179,6 +365,7 @@ document.addEventListener('astro:page-load', () => {
   reveals();
   pauseOffscreenAnimations();
   wordRotators();
+  reelPreviews();
 });
 
 document.addEventListener('astro:before-swap', () => {
@@ -186,4 +373,10 @@ document.addEventListener('astro:before-swap', () => {
   observers = [];
   rotateTimers.forEach((id) => window.clearInterval(id));
   rotateTimers = [];
+  previewObserver?.disconnect();
+  previewObserver = null;
+  warmObserver?.disconnect();
+  warmObserver = null;
+  /* The modal (and its scroll lock) must not survive into the next page. */
+  closeReel();
 });

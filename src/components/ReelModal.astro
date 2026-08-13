@@ -1,0 +1,33 @@
+---
+/**
+ * The full-screen reel player. Render it once on any page that uses
+ * <VideoTile>; opening, closing and teardown across page swaps are handled by
+ * `scripts/site.ts`.
+ */
+---
+
+<div class="reelModal" data-reel-modal hidden>
+  <div class="reelModal__backdrop" data-reel-close></div>
+  <div class="reelModal__dialog" role="dialog" aria-modal="true" aria-label="Reel player">
+    <button type="button" class="reelModal__close" data-reel-close aria-label="Close">&times;</button>
+    <video class="reelModal__video" controls playsinline preload="none"></video>
+    {/* Used only by reels we hold no file for; `src` is set on open and
+        cleared on close, so the frame never loads until it is asked for. */}
+    <iframe
+      class="reelModal__embed"
+      data-reel-frame
+      title="Instagram reel"
+      allow="autoplay; clipboard-write; encrypted-media; picture-in-picture"
+      allowfullscreen
+      hidden></iframe>
+    <div class="reelModal__foot">
+      <div class="reelModal__info">
+        <span class="tile__tag" data-reel-tag></span>
+        <span class="reelModal__title" data-reel-title></span>
+      </div>
+      <a href="#" target="_blank" rel="noopener" class="btn btn--flame reelModal__cta" data-reel-link>
+        View on Instagram ↗
+      </a>
+    </div>
+  </div>
+</div>

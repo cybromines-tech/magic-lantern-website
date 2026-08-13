@@ -1,0 +1,69 @@
+---
+/**
+ * One video tile. Clicking it opens the shared <ReelModal>, which is wired up
+ * globally in `scripts/site.ts` — the tile only has to carry the data
+ * attributes the modal reads.
+ *
+ * `mode` decides what the tile shows before that click:
+ *   poster  — a still image; nothing streams until the visitor asks for it.
+ *   preview — a muted clip looping in place (home page only).
+ */
+import { isEmbed, isPending, type WorkItem } from '../data/work';
+
+interface Props {
+  item: WorkItem;
+  mode?: 'poster' | 'preview';
+  /** Set false inside a slider, where the scroll container owns the entrance. */
+  reveal?: boolean;
+}
+
+const { item, mode = 'poster', reveal = true } = Astro.props;
+---
+
+{
+  isPending(item) ? (
+    <div class="tile tile--pending" data-reveal={reveal ? '' : undefined}>
+      <span class="tile__pendingTitle">{item.title}</span>
+      <span class="tile__pendingNote">Coming soon</span>
+    </div>
+  ) : (
+    <button
+      type="button"
+      class="tile tile--video"
+      data-reveal={reveal ? '' : undefined}
+      data-reel-open
+      data-full={isEmbed(item) ? undefined : item.full}
+      data-embed={isEmbed(item) ? item.postId : undefined}
+      data-poster={item.poster}
+      data-href={item.href}
+      data-aspect={item.aspect}
+      data-tag={item.tag}
+      data-title={item.title}
+    >
+      {mode === 'preview' && !isEmbed(item) && item.preview ? (
+        <video
+          class="tile__img"
+          src={item.preview}
+          poster={item.poster}
+          muted
+          loop
+          playsinline
+          preload="metadata"
+          aria-hidden="true"
+        />
+      ) : (
+        /* Decorative: the title below it already names the reel. */
+        <img class="tile__img" src={item.poster} alt="" loading="lazy" decoding="async" />
+      )}
+      <span class="tile__scrim" aria-hidden="true" />
+      <span class="tile__play" aria-hidden="true">
+        ▶
+      </span>
+      <span class="tile__meta">
+        <span class="tile__tag">{item.tag}</span>
+        <span class="tile__title">{item.title}</span>
+      </span>
+      <span class="visually-hidden">Play reel with sound</span>
+    </button>
+  )
+}

@@ -1,10 +1,116 @@
 ---
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
-import ContentPending from '../components/ContentPending.astro';
+import VideoTile from '../components/VideoTile.astro';
+import ReelModal from '../components/ReelModal.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { aiVideos, socialAds, type WorkItem } from '../data/work';
+
+/* One entry per category. Adding Brand Films or Photoshoots later is an edit
+   here plus a list in `data/work.ts` — the section markup below is a loop.
+   Tiles stay still until they are clicked: nothing streams before then. */
+const sections: {
+  id: string;
+  num: string;
+  title: string;
+  desc: string;
+  items: WorkItem[];
+}[] = [
+  {
+    id: 'social-media-ads',
+    num: '01',
+    title: 'Social Media Ads',
+    desc: 'Short-form work cut for the feed. Tap any one to watch it — the home page carries the three most recent.',
+    items: socialAds,
+  },
+  {
+    id: 'ai-video-production',
+    num: '02',
+    title: 'AI Video Production',
+    desc: 'Generative film and AI-assisted production, built with the same story discipline as everything else we shoot.',
+    items: aiVideos,
+  },
+];
 ---
 
-<Base title="Our Work" description="Brand films, campaign reels, product shoots and the sites that carry them." active="work">
-  <PageHero eyebrow="Selected work" title="Our Work" lede="Brand films, campaign reels, product shoots and the sites that carry them." />
-  <ContentPending note="The full portfolio is being cut together. Ask us for the reel and we will send it over." />
+<Base
+  title="Our Work"
+  description="Social media ads and AI video production from Magic Lantern — watch the reels."
+  active="work"
+>
+  <PageHero
+    eyebrow="Selected work"
+    title="Our Work"
+    lede="Brand films, campaign reels, product shoots and the sites that carry them."
+  />
+
+  {
+    sections.map((section, i) => (
+      <section class:list={['cat', i % 2 === 1 && 'cat--alt']} id={section.id}>
+        <div class="shell">
+          <div class="section-head cat__head">
+            <div>
+              <p class="eyebrow" data-reveal>
+                {section.num} — Category
+              </p>
+              <h2 class="display" data-reveal>
+                {section.title}
+              </h2>
+            </div>
+            <p class="cat__desc" data-reveal>
+              {section.desc}
+            </p>
+          </div>
+
+          <div class="cat__grid">
+            {section.items.map((item) => (
+              <VideoTile item={item} />
+            ))}
+          </div>
+        </div>
+      </section>
+    ))
+  }
+
+  <ReelModal />
+
+  <CtaBand lines={['Let’s make something', 'worth watching']} />
 </Base>
+
+<style>
+  .cat {
+    position: relative;
+    padding-block: var(--section-y);
+    background: var(--ml-bg);
+  }
+
+  /* Alternating grounds keep the categories visually separate as more are
+     added, without needing a rule between them. */
+  .cat--alt {
+    background: var(--ml-bg-alt);
+    border-block: 1px solid var(--ml-line-soft);
+  }
+
+  /* The right-hand slot of .section-head is a paragraph here, not a link, so
+     it needs its own width and baseline. */
+  .cat__head {
+    align-items: flex-end;
+    margin-bottom: 44px;
+  }
+
+  .cat__desc {
+    max-width: 42ch;
+    margin: 0;
+    font-size: clamp(11px, 1.2vw, 13px);
+    line-height: 1.7;
+    color: var(--ml-muted);
+  }
+
+  /* 260px lets four tiles share a row at full shell width, so a fourth reel
+     joins the row rather than stranding itself underneath. */
+  .cat__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 18px;
+  }
+</style>

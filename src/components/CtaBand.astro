@@ -1,0 +1,73 @@
+---
+/** The crimson closing band. One line per entry in `lines`. */
+import { site } from '../data/site';
+
+interface Props {
+  script?: string;
+  lines: string[];
+}
+
+const { script = 'ready when you are', lines } = Astro.props;
+---
+
+<section class="cta">
+  <div class="cta__inner" data-reveal>
+    <p class="cta__script">{script}</p>
+    <h2 class="cta__title">
+      {
+        lines.map((line, i) => (
+          <>
+            {i > 0 && <br />}
+            {line}
+          </>
+        ))
+      }
+    </h2>
+    <div class="cta__actions">
+      <a href="/contact" class="btn btn--light">Start a project</a>
+      <a href={site.whatsapp} target="_blank" rel="noopener" class="btn btn--outline-light">
+        Chat on WhatsApp
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta {
+    position: relative;
+    padding: clamp(72px, 9vw, 140px) var(--gutter);
+    background: radial-gradient(120% 130% at 80% 20%, #7c130f 0%, #3a0f0c 40%, #160b0a 100%);
+    overflow: hidden;
+  }
+
+  .cta__inner {
+    position: relative;
+    max-width: 1000px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .cta__script {
+    font-family: var(--font-script);
+    font-size: clamp(17px, 2.4vw, 26.5px);
+    color: var(--ml-blush-soft);
+    margin: 0 0 10px;
+  }
+
+  .cta__title {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(24.5px, 4.2vw, 63px);
+    line-height: 1.04;
+    text-transform: uppercase;
+    margin: 0 0 30px;
+    color: #fff;
+  }
+
+  .cta__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    justify-content: center;
+  }
+</style>

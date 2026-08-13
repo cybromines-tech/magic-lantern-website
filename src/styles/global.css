@@ -420,3 +420,279 @@ html.ml-js body.ml-ready {
   gap: 20px;
   margin-bottom: 52px;
 }
+
+/* --- Video tiles --------------------------------------------------------- */
+
+/* Shared by the home page's recent-work row, the Pupa section and the Work
+   page's category grids. Pages own the grid around them, not the tile itself. */
+
+.tile {
+  position: relative;
+  display: block;
+  border-radius: 16px;
+  overflow: hidden;
+  aspect-ratio: 4 / 5;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--ml-surface);
+  transition: border-color 0.3s;
+}
+
+.tile:hover {
+  border-color: rgba(224, 86, 74, 0.5);
+}
+
+.tile__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s var(--ease-out);
+}
+
+.tile:hover .tile__img {
+  transform: scale(1.05);
+}
+
+.tile__scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 45%, rgba(10, 10, 12, 0.9));
+  pointer-events: none;
+}
+
+.tile__meta {
+  position: absolute;
+  left: 22px;
+  right: 22px;
+  bottom: 22px;
+  pointer-events: none;
+}
+
+.tile__tag {
+  display: block;
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ml-blush);
+  margin-bottom: 6px;
+}
+
+.tile__title {
+  display: block;
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: 14px;
+  color: #fff;
+}
+
+.tile--video {
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+}
+
+.tile__play {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  font-size: 10.5px;
+  color: #fff;
+  background: rgba(15, 16, 18, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(6px);
+  transition: background 0.3s, transform 0.3s var(--ease-out);
+  pointer-events: none;
+}
+
+.tile--video:hover .tile__play {
+  background: rgba(224, 86, 74, 0.85);
+  transform: scale(1.08);
+}
+
+/* Reel slot with a permalink but no local preview/full/poster yet — opens the
+   post in a new tab instead of the in-page modal. */
+.tile--video-link {
+  display: flex;
+  align-items: flex-end;
+  background: radial-gradient(120% 120% at 30% 15%, rgba(224, 86, 74, 0.22), transparent 60%),
+    var(--ml-surface);
+}
+
+.tile__reelIcon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  font-size: 20px;
+  color: #fff;
+  background: rgba(15, 16, 18, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(6px);
+  transform: translate(-50%, -50%);
+  transition: background 0.3s, transform 0.3s var(--ease-out);
+}
+
+.tile--video-link:hover .tile__reelIcon {
+  background: rgba(224, 86, 74, 0.85);
+  transform: translate(-50%, -50%) scale(1.08);
+}
+
+/* Empty slot — reserves the grid position until a video is ready. */
+.tile--pending {
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 10px;
+  padding: 24px;
+  text-align: center;
+  border-style: dashed;
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+.tile--pending:hover {
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+.tile__pendingTitle {
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.tile__pendingNote {
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+/* --- Reel modal ---------------------------------------------------------- */
+
+.reelModal {
+  position: fixed;
+  inset: 0;
+  z-index: 300; /* Above the nav (200). */
+  display: grid;
+  place-items: center;
+  padding: clamp(16px, 4vw, 48px);
+}
+
+/* `display: grid` above would otherwise beat the UA rule for [hidden]. */
+.reelModal[hidden] {
+  display: none;
+}
+
+.reelModal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(8, 8, 10, 0.86);
+  backdrop-filter: blur(8px);
+}
+
+.reelModal__dialog {
+  position: relative;
+  width: min(960px, 100%);
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--ml-surface);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 40px 90px rgba(0, 0, 0, 0.55);
+}
+
+.reelModal__video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #000;
+}
+
+/* `display: block` above would beat the UA rule for [hidden], same as the
+   modal itself. Only one of the two players is ever on screen. */
+.reelModal__video[hidden],
+.reelModal__embed[hidden] {
+  display: none;
+}
+
+/* Instagram's frame carries its own header and action bar, so it needs more
+   height than the reel alone and sets its own white ground. */
+.reelModal__embed {
+  display: block;
+  width: 100%;
+  height: min(74vh, 700px);
+  border: 0;
+  background: #fff;
+}
+
+/* The frame's own header sits under our close button, so the dialog opens a
+   dark strip above it for the button to live in. */
+.reelModal__dialog--embed {
+  width: min(420px, 100%);
+  padding-top: 52px;
+}
+
+/* Portrait reels get a narrow dialog; the viewport-height term keeps the
+   16:9-tall video plus the footer on screen on short windows. */
+.reelModal__dialog--portrait {
+  width: min(400px, 100%, calc((100vh - 250px) * 9 / 16));
+}
+
+.reelModal__dialog--portrait .reelModal__video {
+  aspect-ratio: 9 / 16;
+}
+
+.reelModal__close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: 50%;
+  font-size: 22px;
+  line-height: 1;
+  color: #fff;
+  cursor: pointer;
+  background: rgba(15, 16, 18, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  transition: background 0.3s;
+}
+
+.reelModal__close:hover {
+  background: rgba(224, 86, 74, 0.85);
+}
+
+.reelModal__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 16px 20px;
+}
+
+.reelModal__title {
+  display: block;
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: 11.5px;
+  color: #fff;
+}
