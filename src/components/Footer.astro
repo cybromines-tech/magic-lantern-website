@@ -1,7 +1,7 @@
 ---
 import Logo from './Logo.astro';
 import CybrominesLogo from './CybrominesLogo.astro';
-import { services, site, socials } from '../data/site';
+import { phones, services, site, socials } from '../data/site';
 
 const year = new Date().getFullYear();
 ---
@@ -41,7 +41,14 @@ const year = new Date().getFullYear();
       <div class="footer__contact">
         <h2 class="footer__title">Get in touch</h2>
         <a href={`mailto:${site.email}`} class="footer__link">{site.email}</a>
-        <a href={site.phoneHref} class="footer__link">{site.phone}</a>
+        {
+          phones.map((p) => (
+            <a href={p.href} class="footer__link footer__phone">
+              <span class="footer__region">{p.region}</span>
+              {p.display}
+            </a>
+          ))
+        }
         <p class="footer__address">
           {site.address}<br /><span>(update with your real address)</span>
         </p>
@@ -163,6 +170,24 @@ const year = new Date().getFullYear();
 
   .footer__link:hover {
     color: var(--ml-flame);
+  }
+
+  /* Two lines, so each carries the region that tells them apart. */
+  .footer__phone {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+
+  .footer__region {
+    flex: none;
+    min-width: 34px;
+    font-family: var(--font-ui);
+    font-weight: 700;
+    font-size: 8.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ml-dim);
   }
 
   .footer__address {

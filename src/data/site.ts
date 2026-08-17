@@ -1,5 +1,25 @@
 /** Single source of truth for anything that appears in more than one place. */
 
+/**
+ * Both lines, in priority order — India first. Anywhere the design has room
+ * for one number only, it uses `phones[0]` via `site.phone`; anywhere it can
+ * list them, it maps over this array.
+ */
+export const phones = [
+  {
+    region: 'India',
+    display: '+91 85928 56465',
+    href: 'tel:+918592856465',
+    whatsapp: 'https://wa.me/918592856465',
+  },
+  {
+    region: 'UAE',
+    display: '+971 55 757 7249',
+    href: 'tel:+971557577249',
+    whatsapp: 'https://wa.me/971557577249',
+  },
+] as const;
+
 export const site = {
   name: 'Magic Lantern',
   legalName: 'Magic Lantern Entertainments',
@@ -7,10 +27,10 @@ export const site = {
   description:
     'Magic Lantern is a full-service media house — we script, shoot, design and market your brand from the very first idea to the final cut.',
   email: 'hello@magiclantern.studio',
-  /* Placeholders carried over from the source template — swap for the real numbers. */
-  phone: '+91 00000 00000',
-  phoneHref: 'tel:+910000000000',
-  whatsapp: 'https://wa.me/910000000000',
+  /* The India line, for the single-number slots. See `phones` above for both. */
+  phone: phones[0].display,
+  phoneHref: phones[0].href,
+  whatsapp: phones[0].whatsapp,
   address: 'Thrissur, Kerala · India',
   founded: 'Founded by students of Sree Kerala Varma College.',
 } as const;

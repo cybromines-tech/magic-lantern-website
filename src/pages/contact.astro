@@ -2,9 +2,127 @@
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 import ContentPending from '../components/ContentPending.astro';
+import { phones, site } from '../data/site';
+
+/* Split so the address can break after the "@" instead of mid-domain. */
+const [emailUser, emailDomain] = site.email.split('@');
 ---
 
 <Base title="Contact" description="Tell us about the project. We reply fast — usually the same day." active="contact">
   <PageHero eyebrow="Say hello" title="Contact" lede="Tell us about the project. We reply fast — usually the same day." />
+
+  <!-- DETAILS -->
+  <section class="details">
+    <div class="shell">
+      <p class="eyebrow" data-reveal>Reach us</p>
+
+      <ul class="details__grid">
+        <li class="card" data-reveal>
+          <span class="card__label">Email</span>
+          <a href={`mailto:${site.email}`} class="card__value">
+            {emailUser}@<wbr />{emailDomain}
+          </a>
+          <span class="card__note">Best for briefs, decks and quotes.</span>
+        </li>
+
+        {
+          phones.map((p) => (
+            <li class="card" data-reveal>
+              <span class="card__label">Call · {p.region}</span>
+              <a href={p.href} class="card__value">{p.display}</a>
+              <a href={p.whatsapp} target="_blank" rel="noopener" class="card__wa">
+                WhatsApp this number →
+              </a>
+            </li>
+          ))
+        }
+
+        <li class="card" data-reveal>
+          <span class="card__label">Studio</span>
+          <span class="card__value card__value--plain">{site.address}</span>
+          <span class="card__note">{site.founded}</span>
+        </li>
+      </ul>
+    </div>
+  </section>
+
   <ContentPending note="The contact form is on its way. For now, email or WhatsApp reaches us fastest." />
 </Base>
+
+<style>
+  .details {
+    padding-block: var(--section-y);
+    background: var(--ml-bg);
+  }
+
+  .details__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: clamp(14px, 1.6vw, 22px);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: clamp(22px, 2.4vw, 30px);
+    border-radius: 16px;
+    border: 1px solid var(--ml-line);
+    background: var(--ml-surface);
+    transition: border-color 0.3s, transform 0.4s var(--ease-out);
+  }
+
+  .card:hover {
+    border-color: rgba(224, 86, 74, 0.4);
+    transform: translateY(-3px);
+  }
+
+  .card__label {
+    font-family: var(--font-ui);
+    font-weight: 700;
+    font-size: 9.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ml-flame);
+  }
+
+  .card__value {
+    font-family: var(--font-ui);
+    font-weight: 600;
+    font-size: clamp(12.5px, 1.3vw, 15px);
+    line-height: 1.35;
+    color: var(--ml-ink-hi);
+    /* Breaks at the <wbr /> after the "@" first, and only splits a word if
+       even that leaves it too wide for the column. */
+    overflow-wrap: break-word;
+  }
+
+  a.card__value:hover {
+    color: var(--ml-flame-hi);
+  }
+
+  .card__value--plain {
+    color: var(--ml-ink);
+  }
+
+  .card__note {
+    font-size: 10.5px;
+    line-height: 1.65;
+    color: var(--ml-dim);
+  }
+
+  .card__wa {
+    font-family: var(--font-ui);
+    font-weight: 600;
+    font-size: 10px;
+    letter-spacing: 0.04em;
+    color: var(--ml-blush);
+  }
+
+  .card__wa:hover {
+    color: var(--ml-flame-hi);
+  }
+</style>
