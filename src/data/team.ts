@@ -34,8 +34,8 @@ export const team: Member[] = [
   { slug: 'm07', name: 'Akash UP', role: 'Creative Producer' },
   { slug: 'm06', name: 'Arjun', role: 'Creative Producer' },
   { slug: 'm05', name: 'Rishikesh', role: 'Creative Director' },
-  { slug: 'm04', name: 'Devanarayanan', role: 'Creative Director' },
-  { slug: 'm03', name: 'Darin Francis', role: 'Cinematographer' },
+  { slug: 'm04', name: 'Arjun Marar', role: 'Creative Director' },
+  { slug: 'm03', name: 'Devanarayanan', role: 'Cinematographer' },
   { slug: 'm02', name: 'Devadas', role: 'Video Editor' },
   { slug: 'm01', name: 'Arun Jayaraj', role: 'Creative Director' },
 ];
