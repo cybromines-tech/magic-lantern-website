@@ -14,7 +14,6 @@
  *   m07 b1a607ca-…d91d        m08 IMG_3501              m09 IMG_9335-01
  *   m10 IMG_1362              m11 IMG-20240914-WA0111   m12 IMG-20230719-WA0008 2
  *   m13 IMG_6420
- *   crew IMG-20230719-WA0008 (the group shot in the closing band)
  */
 
 export type Member = {
