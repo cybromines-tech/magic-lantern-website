@@ -77,7 +77,7 @@ const num = (i: number) => String(i + 1).padStart(2, '0');
           ))
         }
 
-        {/* Fills the twelfth slot so the 4-column grid closes square. */}
+        {/* Closes the roster with an open invitation. */}
         <li class="member" data-reveal>
           <a class="member__frame joinCard" href="/contact">
             <span class="joinCard__plus" aria-hidden="true">+</span>
@@ -486,7 +486,7 @@ const num = (i: number) => String(i + 1).padStart(2, '0');
   }
 
   /* Two columns hold all the way down to the narrowest phones — a single
-     column would turn eleven 3:4 cards into a 5,000px scroll. */
+     column would turn a dozen 3:4 cards into a 5,000px scroll. */
   @media (max-width: 359px) {
     .roster__grid {
       grid-template-columns: 1fr;
