@@ -13,6 +13,7 @@
  *   m04 IMG-20260814-WA0065   m05 file_0000…f2a476      m06 IMG-20260814-WA0184
  *   m07 b1a607ca-…d91d        m08 IMG_3501              m09 IMG_9335-01
  *   m10 IMG_1362              m11 IMG-20240914-WA0111   m12 IMG-20230719-WA0008 2
+ *   m13 IMG_6420
  *   crew IMG-20230719-WA0008 (the group shot in the closing band)
  */
 
@@ -28,6 +29,7 @@ export type Member = {
    and the first one closes it, so the slugs count down. */
 export const team: Member[] = [
   { slug: 'm11', name: 'Gokul Babu', role: 'Founder · CEO' },
+  { slug: 'm13', name: 'Sarah David', role: 'Co-Founder' },
   { slug: 'm10', name: 'Gokul Nandan', role: 'Co-Founder · Managing Director' },
   { slug: 'm09', name: 'Sarang Sangeeth', role: 'Post Production Director' },
   { slug: 'm08', name: 'Vishnudev VD', role: 'Visualizer' },
