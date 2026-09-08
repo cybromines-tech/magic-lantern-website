@@ -1,7 +1,7 @@
 ---
 import Logo from './Logo.astro';
 import CybrominesLogo from './CybrominesLogo.astro';
-import { phones, services, site, socials } from '../data/site';
+import { creativeServices, phones, site, socials, softwareServiceLinks } from '../data/site';
 
 const year = new Date().getFullYear();
 ---
@@ -35,7 +35,19 @@ const year = new Date().getFullYear();
 
       <nav class="footer__col" aria-label="Services">
         <h2 class="footer__title">Services</h2>
-        {services.map((s) => <a href={s.href} class="footer__link">{s.title}</a>)}
+        {creativeServices.map((s) => <a href={s.href} class="footer__link">{s.title}</a>)}
+      </nav>
+
+      {/* Only the systems people search for by name; the rest are one click
+          further on, behind the link that closes the column. */}
+      <nav class="footer__col" aria-label="Software">
+        <h2 class="footer__title">Software</h2>
+        {
+          softwareServiceLinks
+            .slice(0, 5)
+            .map((s) => <a href={s.href} class="footer__link">{s.title}</a>)
+        }
+        <a href="/services#software" class="footer__link footer__link--more">All systems →</a>
       </nav>
 
       <div class="footer__contact">
@@ -175,6 +187,11 @@ const year = new Date().getFullYear();
   /* The nav links are caps; an address is data, so it keeps its own casing. */
   .footer__link--email {
     font-family: var(--font-body);
+  }
+
+  .footer__link--more {
+    color: var(--ml-flame);
+    margin-top: 4px;
   }
 
   /* Two lines, so each carries the region that tells them apart. */

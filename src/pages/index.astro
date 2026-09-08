@@ -5,7 +5,7 @@ import CybrominesLogo from '../components/CybrominesLogo.astro';
 import VideoTile from '../components/VideoTile.astro';
 import ReelModal from '../components/ReelModal.astro';
 import CtaBand from '../components/CtaBand.astro';
-import { services, site } from '../data/site';
+import { creativeServices, site, softwareServiceLinks } from '../data/site';
 import { socialAds } from '../data/work';
 
 const marqueeWords = [
@@ -199,7 +199,7 @@ const pupaReels: (PupaReel | null)[] = [
 
       <div class="services__grid">
         {
-          services.map((s) => (
+          creativeServices.map((s) => (
             <a href={s.href} class="card" data-reveal>
               <span class="card__num">{s.num}</span>
               <span class="card__body">
@@ -211,6 +211,39 @@ const pupaReels: (PupaReel | null)[] = [
           ))
         }
       </div>
+    </div>
+  </section>
+
+  <!-- SOFTWARE -->
+  <section class="systems">
+    <div class="shell">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow" data-reveal>The other half</p>
+          <h2 class="display" data-reveal>And the systems<br />underneath it</h2>
+        </div>
+        <a href="/services#software" class="link-arrow" data-reveal>All systems →</a>
+      </div>
+
+      <p class="systems__lede" data-reveal>
+        A campaign brings people to the door. What happens after that is software — the
+        order, the stock, the payroll, the follow-up nobody made. We build that half too,
+        engineered with our development partner <a href="/cybromines">Cybromines</a>.
+      </p>
+
+      <ul class="systems__grid">
+        {
+          softwareServiceLinks.map((s) => (
+            <li>
+              <a href={s.href} class="system" data-reveal>
+                <span class="system__num">{s.num}</span>
+                <span class="system__title">{s.title}</span>
+                <span class="system__desc">{s.desc}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
     </div>
   </section>
 
@@ -948,6 +981,86 @@ const pupaReels: (PupaReel | null)[] = [
     display: block;
     font-size: 11px;
     line-height: 1.6;
+    color: var(--ml-muted);
+  }
+
+  /* --- Software ----------------------------------------------------------- */
+
+  /* Twelve rows would swamp the four creative cards above if they were built
+     the same way, so these are compact and text-only — a catalogue, not a
+     second pitch. */
+  .systems {
+    position: relative;
+    padding-block: var(--section-y);
+    background: var(--ml-bg);
+  }
+
+  .systems__lede {
+    max-width: 66ch;
+    font-size: clamp(11.5px, 1.2vw, 13.5px);
+    line-height: 1.75;
+    color: var(--ml-text);
+    margin: 0 0 clamp(30px, 3.4vw, 46px);
+  }
+
+  .systems__lede a {
+    color: #b7a9e0;
+    border-bottom: 1px solid rgba(183, 169, 224, 0.4);
+    transition: color 0.2s;
+  }
+
+  .systems__lede a:hover {
+    color: #d3c8f5;
+  }
+
+  .systems__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(268px, 1fr));
+    gap: 1px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    background: var(--ml-line);
+    border: 1px solid var(--ml-line);
+    border-radius: 18px;
+    overflow: hidden;
+  }
+
+  .system {
+    display: block;
+    height: 100%;
+    padding: 24px 26px 26px;
+    background: var(--ml-bg);
+    transition: background 0.25s;
+  }
+
+  .system:hover {
+    background: var(--ml-surface-hi);
+  }
+
+  .system__num {
+    display: block;
+    font-family: var(--font-ui);
+    font-weight: 700;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: rgba(224, 86, 74, 0.6);
+    margin-bottom: 12px;
+  }
+
+  .system__title {
+    display: block;
+    font-family: var(--font-ui);
+    font-weight: 700;
+    font-size: 12.5px;
+    color: var(--ml-ink);
+    margin-bottom: 8px;
+  }
+
+  .system__desc {
+    display: block;
+    font-size: 10.5px;
+    line-height: 1.65;
     color: var(--ml-muted);
   }
 

@@ -4,7 +4,7 @@
  * grid, a numbered process, and the standard contact CTA. Content comes in as
  * props so each page stays a pure content file.
  */
-import { site } from '../data/site';
+import ServiceCta from './ServiceCta.astro';
 
 interface Step {
   title: string;
@@ -18,9 +18,11 @@ interface Props {
   deliverablesLede: string;
   deliverables: string[];
   steps: Step[];
+  /** Set false when the page needs to slot something in before the CTA. */
+  cta?: boolean;
 }
 
-const { overview, deliverablesLede, deliverables, steps } = Astro.props;
+const { overview, deliverablesLede, deliverables, steps, cta = true } = Astro.props;
 const [statement, ...paragraphs] = overview;
 ---
 
@@ -62,19 +64,7 @@ const [statement, ...paragraphs] = overview;
   </div>
 </section>
 
-<!-- CTA -->
-<section class="cta">
-  <div class="cta__inner" data-reveal>
-    <p class="eyebrow">Ready when you are</p>
-    <h2 class="cta__title">Tell us where your brand needs to go — we'll light the way.</h2>
-    <div class="cta__actions">
-      <a href="/contact" class="btn btn--flame">Start your project →</a>
-      <a href={site.whatsapp} target="_blank" rel="noopener" class="btn btn--ghost">
-        Chat on WhatsApp
-      </a>
-    </div>
-  </div>
-</section>
+{cta && <ServiceCta />}
 
 <style>
   /* --- Overview ----------------------------------------------------------- */
@@ -181,39 +171,6 @@ const [statement, ...paragraphs] = overview;
     line-height: 1.7;
     color: var(--ml-muted);
     margin: 0;
-  }
-
-  /* --- CTA ---------------------------------------------------------------- */
-
-  .cta {
-    position: relative;
-    padding: clamp(72px, 9vw, 132px) var(--gutter);
-    background: radial-gradient(120% 130% at 75% 18%, #3a1f1c 0%, #1c1d22 46%, #0f1012 100%);
-    overflow: hidden;
-  }
-
-  .cta__inner {
-    position: relative;
-    max-width: 780px;
-    margin: 0 auto;
-    text-align: center;
-  }
-
-  .cta__title {
-    font-family: var(--font-ui);
-    font-weight: 700;
-    font-size: clamp(18.5px, 2.9vw, 32.5px);
-    line-height: 1.22;
-    letter-spacing: -0.02em;
-    margin: 0 0 36px;
-    color: var(--ml-ink-hi);
-  }
-
-  .cta__actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 14px;
-    justify-content: center;
   }
 
   /* --- Responsive --------------------------------------------------------- */

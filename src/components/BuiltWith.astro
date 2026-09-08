@@ -1,0 +1,91 @@
+---
+/**
+ * The partner credit that closes every software service page. Magic Lantern
+ * sells and shapes the system; Cybromines engineers it. Saying so once per
+ * page keeps the two companies straight without turning the copy into a
+ * running disclaimer.
+ */
+import CybrominesLogo from './CybrominesLogo.astro';
+
+interface Props {
+  /** Gradients inside the logo are keyed by id, so each instance needs its own. */
+  uid?: string;
+}
+
+const { uid = 'builtwith' } = Astro.props;
+---
+
+<section class="built">
+  <div class="shell shell--narrow built__inner" data-reveal>
+    <div class="built__lockup">
+      <span class="built__label">Built with</span>
+      <span class="built__rule" aria-hidden="true"></span>
+      <CybrominesLogo size={30} uid={uid} />
+    </div>
+
+    <p class="built__note">
+      Magic Lantern owns the brief, the interface and the story around it. Cybromines
+      engineers the system underneath. One table, one brief, no hand-off gap between the
+      people who design it and the people who ship it.
+    </p>
+
+    <a href="/cybromines" class="link-arrow link-arrow--cybro">About the partnership →</a>
+  </div>
+</section>
+
+<style>
+  .built {
+    padding-block: clamp(52px, 6vw, 84px);
+    background: var(--ml-bg-alt);
+    border-top: 1px solid var(--ml-line);
+    border-bottom: 1px solid var(--ml-line);
+  }
+
+  .built__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 18px;
+  }
+
+  .built__lockup {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .built__label {
+    font-family: var(--font-ui);
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    color: var(--ml-dim);
+  }
+
+  .built__rule {
+    width: 34px;
+    height: 1px;
+    background: var(--ml-line-strong);
+  }
+
+  .built__note {
+    max-width: 62ch;
+    font-size: clamp(11.5px, 1.2vw, 13.5px);
+    line-height: 1.75;
+    color: var(--ml-text);
+    margin: 0;
+  }
+
+  /* Matches the violet the partner brand uses everywhere else on the site.
+     `.link-arrow` sets `align-self: flex-end` for the section-head layout it
+     usually sits in; here it opens a left-aligned stack instead. */
+  .link-arrow--cybro {
+    align-self: flex-start;
+    color: #b7a9e0;
+    border-bottom-color: rgba(183, 169, 224, 0.4);
+  }
+
+  .link-arrow--cybro:hover {
+    color: #d3c8f5;
+  }
+</style>

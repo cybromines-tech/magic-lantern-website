@@ -1,0 +1,49 @@
+---
+/**
+ * Every software service page, generated from `data/software.ts`. Adding a
+ * system to that array publishes its page, its nav entry and its cards with
+ * no edit here.
+ *
+ * The partner credit has to sit between the process grid and the call to
+ * action, so <ServiceDetail> is asked to skip its own CTA and the page places
+ * <BuiltWith> and <ServiceCta> in order instead.
+ */
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import ServiceDetail from '../../components/ServiceDetail.astro';
+import ServiceCta from '../../components/ServiceCta.astro';
+import BuiltWith from '../../components/BuiltWith.astro';
+import { softwareServices, type SoftwareService } from '../../data/software';
+
+export function getStaticPaths() {
+  return softwareServices.map((service) => ({
+    params: { slug: service.slug },
+    props: { service },
+  }));
+}
+
+interface Props {
+  service: SoftwareService;
+}
+
+const { service } = Astro.props;
+---
+
+<Base title={service.title} description={service.desc} active="services">
+  <PageHero eyebrow={`System ${service.num}`} title={service.title} lede={service.desc} />
+
+  <ServiceDetail
+    overview={service.overview}
+    deliverablesLede={service.deliverablesLede}
+    deliverables={service.deliverables}
+    steps={service.steps}
+    cta={false}
+  />
+
+  <BuiltWith uid={service.slug} />
+
+  <ServiceCta
+    eyebrow="Ready when you are"
+    title="Tell us what the system has to do — we'll scope it with you."
+  />
+</Base>

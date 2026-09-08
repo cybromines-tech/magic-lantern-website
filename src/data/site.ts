@@ -1,5 +1,7 @@
 /** Single source of truth for anything that appears in more than one place. */
 
+import { softwareServices } from './software';
+
 /**
  * Both lines, in priority order — India first. Anywhere the design has room
  * for one number only, it uses `phones[0]` via `site.phone`; anywhere it can
@@ -40,10 +42,20 @@ export type NavLink = {
   href: string;
   /** Matches the `active` key a page passes to <Nav>. */
   key: string;
-  children?: { label: string; href: string }[];
+  /**
+   * Dropdown contents, as one or more titled columns. A single column renders
+   * as a plain list; two or more render side by side with their headings.
+   */
+  groups?: {
+    label: string;
+    /** Where the column heading itself links — a section on /services. */
+    href: string;
+    items: { label: string; href: string }[];
+  }[];
 };
 
-export const services = [
+/** The creative half of the offer — what Magic Lantern shoots, designs and runs. */
+export const creativeServices = [
   {
     num: '01',
     title: 'Branding',
@@ -70,6 +82,35 @@ export const services = [
   },
 ] as const;
 
+/**
+ * The software half, from `data/software.ts`, flattened to the same shape so
+ * the nav, the footer and the service grids can treat both halves alike.
+ */
+export const softwareServiceLinks = softwareServices.map((s) => ({
+  num: s.num,
+  title: s.title,
+  desc: s.desc,
+  href: `/software/${s.slug}`,
+}));
+
+/** Drives the Services dropdown and the two sections of /services. */
+export const serviceGroups = [
+  {
+    key: 'creative',
+    label: 'Creative',
+    href: '/services#creative',
+    blurb: 'The story, the film, the brand and the campaign that carries it.',
+    services: creativeServices,
+  },
+  {
+    key: 'software',
+    label: 'Software',
+    href: '/services#software',
+    blurb: 'The systems your operation runs on, engineered with Cybromines.',
+    services: softwareServiceLinks,
+  },
+] as const;
+
 export const navLinks: NavLink[] = [
   { label: 'Home', href: '/', key: 'home' },
   { label: 'About', href: '/about', key: 'about' },
@@ -77,7 +118,11 @@ export const navLinks: NavLink[] = [
     label: 'Services',
     href: '/services',
     key: 'services',
-    children: services.map((s) => ({ label: s.title, href: s.href })),
+    groups: serviceGroups.map((g) => ({
+      label: g.label,
+      href: g.href,
+      items: g.services.map((s) => ({ label: s.title, href: s.href })),
+    })),
   },
   { label: 'Work', href: '/portfolio', key: 'work' },
   { label: 'Team', href: '/team', key: 'team' },

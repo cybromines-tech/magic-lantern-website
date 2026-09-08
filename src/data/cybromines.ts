@@ -24,7 +24,11 @@ export const cybromines = {
   ],
 } as const;
 
-/** The seven products they position as one platform. */
+/**
+ * The products they position as one platform. Magic Lantern sells the same
+ * systems in its own voice from `data/software.ts` — if a system's positioning
+ * changes, change it in both files.
+ */
 export const cybrominesSystems = [
   {
     num: '01',
@@ -38,26 +42,36 @@ export const cybrominesSystems = [
   },
   {
     num: '03',
+    title: 'WhatsApp CRM',
+    desc: 'Run sales and support on the channel customers actually reply on. An AI agent answers out of hours and hands over the moment it should.',
+  },
+  {
+    num: '04',
+    title: 'HRMS',
+    desc: 'Attendance, leave, payroll and appraisals in one place, with statutory compliance handled per country. AI flags the exceptions before payroll runs.',
+  },
+  {
+    num: '05',
     title: 'POS System',
     desc: 'Sell fast at the counter — online or off. AI suggests upsells at checkout and flags suspicious transactions in real time.',
   },
   {
-    num: '04',
+    num: '06',
     title: 'Inventory System',
     desc: "Know exactly what you hold, where, and what it's worth. AI forecasts demand and raises purchase requests before stockouts happen.",
   },
   {
-    num: '05',
+    num: '07',
     title: 'Production System',
     desc: 'Plan, build, and track every work order on the floor. AI optimises the schedule and predicts equipment failures before they stop the line.',
   },
   {
-    num: '06',
+    num: '08',
     title: 'Property System',
     desc: 'Manage units, leases, and tenants on one platform. An AI agent chases renewals and rent, and triages every maintenance request.',
   },
   {
-    num: '07',
+    num: '09',
     title: 'Queue Management',
     desc: 'Turn waiting lines into a smooth, measured experience. AI predicts wait times and tells you exactly when to open another counter.',
   },
@@ -79,7 +93,7 @@ export const cybrominesServices = [
 
 /** Figures as published on cybromines.com — confirm before a release. */
 export const cybrominesStats = [
-  { value: '7', label: 'Systems on one platform' },
+  { value: '9', label: 'Systems on one platform' },
   { value: '120+', label: 'Enterprise deployments' },
   { value: '99.9%', label: 'Platform uptime' },
   { value: '6', label: 'GCC countries served' },

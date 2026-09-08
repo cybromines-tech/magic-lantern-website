@@ -1,8 +1,13 @@
 ---
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
+import CybrominesLogo from '../components/CybrominesLogo.astro';
+import { softwareServices } from '../data/software';
 
-const serviceDetails = [
+/* The creative four, with the long-form pitch and the artwork the software
+   systems below deliberately do without. Their short lines live in
+   `data/site.ts`; these are the paragraphs only this page has room for. */
+const creativeDetails = [
   {
     num: '01',
     title: 'Branding',
@@ -34,40 +39,108 @@ const serviceDetails = [
 ];
 ---
 
-<Base title="Services" description="Branding, digital marketing, websites, video and photography — end to end, in house." active="services">
-  <PageHero eyebrow="What we do" title="Services" lede="Branding, digital marketing, websites, video and photography — end to end, in house." />
+<Base
+  title="Services"
+  description="Branding, marketing, websites, video and photography — plus the ERP, CRM, HRMS and POS systems that run the business underneath."
+  active="services"
+>
+  <PageHero
+    eyebrow="What we do"
+    title="Services"
+    lede="Two halves of one offer: the story that brings people to your door, and the systems that handle them once they arrive."
+  />
 
-  <section class="serviceList">
+  <!-- CREATIVE -->
+  <section class="serviceList" id="creative">
     <div class="shell">
-      {
-        serviceDetails.map((s) => (
-          <article class="serviceCard" data-reveal>
-            <a href={s.href} class="serviceCard__media">
-              <img src={s.image} alt={s.title} loading="lazy" decoding="async" />
+      <div class="section-head">
+        <div>
+          <p class="eyebrow" data-reveal>01 — Creative</p>
+          <h2 class="display" data-reveal>The story, and<br />everything that carries it</h2>
+        </div>
+        <p class="sectionNote" data-reveal>
+          Scripted, shot, designed and marketed in house — from the first idea to the
+          final cut.
+        </p>
+      </div>
+
+      <div class="serviceList__grid">
+        {
+          creativeDetails.map((s) => (
+            <article class="serviceCard" data-reveal>
+              <a href={s.href} class="serviceCard__media">
+                <img src={s.image} alt={s.title} loading="lazy" decoding="async" />
+              </a>
+              <div class="serviceCard__body">
+                <span class="serviceCard__num">{s.num}</span>
+                <h3 class="serviceCard__title">{s.title}</h3>
+                <p class="serviceCard__desc">{s.desc}</p>
+                <a href={s.href} class="link-arrow">Learn more →</a>
+              </div>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- SOFTWARE -->
+  <section class="systemList" id="software">
+    <div class="shell">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow eyebrow--cybro" data-reveal>02 — Software</p>
+          <h2 class="display" data-reveal>The systems your<br />operation runs on</h2>
+        </div>
+        <p class="sectionNote" data-reveal>
+          Sold and shaped by Magic Lantern, engineered by our development partner
+          Cybromines. One brief, one team, no hand-off gap.
+        </p>
+      </div>
+
+      <div class="systemList__grid">
+        {
+          softwareServices.map((s) => (
+            <a href={`/software/${s.slug}`} class="systemCard" data-reveal>
+              <span class="systemCard__num">{s.num}</span>
+              <h3 class="systemCard__title">{s.title}</h3>
+              <p class="systemCard__desc">{s.desc}</p>
+              <span class="systemCard__more">Explore →</span>
             </a>
-            <div class="serviceCard__body">
-              <span class="serviceCard__num">{s.num}</span>
-              <h2 class="serviceCard__title">{s.title}</h2>
-              <p class="serviceCard__desc">{s.desc}</p>
-              <a href={s.href} class="link-arrow">Learn more →</a>
-            </div>
-          </article>
-        ))
-      }
+          ))
+        }
+      </div>
+
+      <a href="/cybromines" class="partnerRow" data-reveal>
+        <span class="partnerRow__label">Software development partner</span>
+        <span class="partnerRow__rule" aria-hidden="true"></span>
+        <CybrominesLogo size={26} uid="services" />
+      </a>
     </div>
   </section>
 </Base>
 
 <style>
+  /* --- Creative ------------------------------------------------------------ */
+
   .serviceList {
     padding-block: var(--section-y);
     background: var(--ml-bg);
   }
 
-  .serviceList .shell {
+  .serviceList__grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 28px;
+  }
+
+  .sectionNote {
+    max-width: 40ch;
+    align-self: flex-end;
+    font-size: 11px;
+    line-height: 1.75;
+    color: var(--ml-muted);
+    margin: 0;
   }
 
   .serviceCard {
@@ -132,9 +205,108 @@ const serviceDetails = [
     margin: 0 0 22px;
   }
 
+  /* --- Software ------------------------------------------------------------ */
+
+  /* The violet marks the systems as partner-built without restyling the whole
+     section into Cybromines' palette. */
+  .systemList {
+    padding-block: var(--section-y);
+    background: var(--ml-bg-alt);
+    border-top: 1px solid var(--ml-line);
+  }
+
+  .eyebrow--cybro {
+    color: #b7a9e0;
+  }
+
+  .systemList__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(268px, 1fr));
+    gap: 18px;
+  }
+
+  .systemCard {
+    display: flex;
+    flex-direction: column;
+    min-height: 210px;
+    padding: 26px 26px 24px;
+    border-radius: 16px;
+    background: var(--ml-surface);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: transform 0.3s var(--ease-out), border-color 0.3s, background 0.3s;
+  }
+
+  .systemCard:hover {
+    transform: translateY(-5px);
+    border-color: rgba(124, 58, 237, 0.45);
+    background: var(--ml-surface-hi);
+  }
+
+  .systemCard__num {
+    font-family: var(--font-display);
+    font-size: 20px;
+    line-height: 1;
+    color: rgba(167, 139, 250, 0.34);
+  }
+
+  .systemCard__title {
+    font-family: var(--font-ui);
+    font-weight: 700;
+    font-size: 13px;
+    line-height: 1.25;
+    color: var(--ml-ink);
+    margin: 16px 0 10px;
+  }
+
+  .systemCard__desc {
+    flex: 1;
+    font-size: 10.5px;
+    line-height: 1.7;
+    color: var(--ml-muted);
+    margin: 0 0 18px;
+  }
+
+  .systemCard__more {
+    font-family: var(--font-caps);
+    font-weight: 600;
+    font-size: 10.5px;
+    color: #b7a9e0;
+  }
+
+  .partnerRow {
+    display: inline-flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: clamp(34px, 4vw, 54px);
+    color: var(--ml-dim);
+    transition: color 0.2s;
+  }
+
+  .partnerRow:hover {
+    color: var(--ml-ink);
+  }
+
+  .partnerRow__label {
+    font-family: var(--font-caps);
+    font-weight: 600;
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    color: inherit;
+  }
+
+  .partnerRow__rule {
+    width: clamp(28px, 5vw, 60px);
+    height: 1px;
+    background: var(--ml-line-strong);
+  }
+
   @media (max-width: 860px) {
-    .serviceList .shell {
+    .serviceList__grid {
       grid-template-columns: 1fr;
+    }
+
+    .sectionNote {
+      align-self: flex-start;
     }
   }
 </style>
