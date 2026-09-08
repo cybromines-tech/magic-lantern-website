@@ -31,7 +31,7 @@ export const team: Member[] = [
   { slug: 'm13', name: 'Sarah David', role: 'Co-Founder' },
   { slug: 'm10', name: 'Gokul Nandan', role: 'Co-Founder · Managing Director' },
   { slug: 'm09', name: 'Sarang Sangeeth', role: 'Post Production Director' },
-  { slug: 'm08', name: 'Vishnudev VD', role: 'Visualizer' },
+  { slug: 'm08', name: 'Vishnudev VD', role: 'Visualiser' },
   { slug: 'm07', name: 'Akash UP', role: 'Creative Producer' },
   { slug: 'm06', name: 'Arjun', role: 'Creative Producer' },
   { slug: 'm05', name: 'Rishikesh', role: 'Creative Director' },

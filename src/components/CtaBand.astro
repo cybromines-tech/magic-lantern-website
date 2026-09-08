@@ -7,7 +7,7 @@ interface Props {
   lines: string[];
 }
 
-const { script = 'ready when you are', lines } = Astro.props;
+const { script = 'Ready when you are', lines } = Astro.props;
 ---
 
 <section class="cta">
@@ -59,7 +59,6 @@ const { script = 'ready when you are', lines } = Astro.props;
     font-weight: 400;
     font-size: clamp(24.5px, 4.2vw, 63px);
     line-height: 1.04;
-    text-transform: uppercase;
     margin: 0 0 30px;
     color: #fff;
   }

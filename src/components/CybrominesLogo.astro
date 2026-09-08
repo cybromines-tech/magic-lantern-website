@@ -59,8 +59,10 @@ const gradientId = `cybro-grad-${uid}`;
     flex: none;
   }
 
+  /* Their wordmark is set in caps on their own site, so it keeps the caps
+     face rather than following Magic Lantern's body type. */
   .cybro__word {
-    font-family: var(--font-ui);
+    font-family: var(--font-caps);
     font-weight: 600;
     font-size: calc(var(--mark) * 0.62);
     letter-spacing: 0.02em;
