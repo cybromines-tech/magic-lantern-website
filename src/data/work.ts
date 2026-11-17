@@ -59,10 +59,10 @@ export const isPending = (item: WorkItem): item is PendingReel => 'pending' in i
 
 export const isEmbed = (item: WorkItem): item is EmbedReel => 'postId' in item;
 
-/** Most recent first — the home page shows the top three. */
-export const socialAds: WorkItem[] = [
+/** Television commercials — the long-form spots, most recent first. */
+export const tvCommercials: WorkItem[] = [
   {
-    tag: 'Social Reels',
+    tag: 'Television Commercial',
     title: 'Every Brand Has a Soul',
     href: 'https://www.instagram.com/reel/Daavj7ZvLgd/?igsh=cDk1dnNtbXQ2ejVi',
     preview: '/assets/reels/brand-film-preview.mp4',
@@ -71,7 +71,7 @@ export const socialAds: WorkItem[] = [
     aspect: 'landscape',
   },
   {
-    tag: 'Video Production',
+    tag: 'Television Commercial',
     title: 'Le Client',
     href: 'https://www.instagram.com/reel/DAtPFqShxuw/?igsh=MXQ5ZDFjc2sxcWN2ZA==',
     preview: '/assets/reels/le-client-preview.mp4',
@@ -79,6 +79,19 @@ export const socialAds: WorkItem[] = [
     poster: '/assets/reels/le-client-poster.jpg',
     aspect: 'portrait',
   },
+  {
+    /* No file we can host — plays through Instagram's embed. */
+    tag: 'Television Commercial',
+    title: 'Skye Holidays',
+    href: 'https://www.instagram.com/reel/DVWI4_Fk__r/',
+    postId: 'DVWI4_Fk__r',
+    poster: '/assets/reels/skye-poster.jpg',
+    aspect: 'portrait',
+  },
+];
+
+/** Most recent first. */
+export const socialAds: WorkItem[] = [
   {
     tag: 'Food & Product Shoot',
     title: 'Hearts and Plates',
@@ -138,7 +151,7 @@ export const socialAds: WorkItem[] = [
     poster: '/assets/reels/reshmi-kabab-poster.jpg',
     aspect: 'portrait',
   },
-  /* The three below have no file we can host — their posts carry no inline
+  /* The two below have no file we can host — their posts carry no inline
      player, only a link out — so they run through Instagram's embed. Export
      the cuts and they become plain `full`/`poster` entries like the rest. */
   {
@@ -147,14 +160,6 @@ export const socialAds: WorkItem[] = [
     href: 'https://www.instagram.com/reel/C9uoJ9mBrcP/',
     postId: 'C9uoJ9mBrcP',
     poster: '/assets/reels/karimeen-fry-poster.jpg',
-    aspect: 'portrait',
-  },
-  {
-    tag: 'Social Media Ad',
-    title: 'Skye Holidays',
-    href: 'https://www.instagram.com/reel/DVWI4_Fk__r/',
-    postId: 'DVWI4_Fk__r',
-    poster: '/assets/reels/skye-poster.jpg',
     aspect: 'portrait',
   },
   {
@@ -181,6 +186,61 @@ export const aiVideos: WorkItem[] = [
     poster: '/assets/ai-video/poorakkatha-poster.jpg',
     aspect: 'portrait',
   },
-  { pending: true, tag: 'AI Video Production', title: 'AI product spot' },
+  {
+    /* No file of our own yet, so this one plays through Instagram's embed. */
+    tag: 'AI Video Production',
+    title: 'Ambiswami Catering',
+    href: 'https://www.instagram.com/reel/DcaXPWxv-1v/',
+    postId: 'DcaXPWxv-1v',
+    poster: '/assets/ai-video/ambiswami-poster.jpg',
+    aspect: 'landscape',
+  },
   { pending: true, tag: 'AI Video Production', title: 'Synthetic presenter ad' },
 ];
+
+/**
+ * The four-episode Onam campaign for Ather, in release order. These play
+ * through Instagram's embed, so the posts have to stay public. The masters
+ * are 200–300 MB each; cut a web version into `/public/assets/ather-onam/`
+ * and an entry becomes a plain `full`/`poster` reel like the rest.
+ */
+export const atherOnam: WorkItem[] = [
+  {
+    tag: 'Onam Campaign',
+    title: 'Ather — Episode 1',
+    href: 'https://www.instagram.com/reel/DcV7pGSPI2S/',
+    postId: 'DcV7pGSPI2S',
+    poster: '/assets/ather-onam/episode-01-poster.jpg',
+    aspect: 'portrait',
+  },
+  {
+    tag: 'Onam Campaign',
+    title: 'Ather — Episode 2',
+    href: 'https://www.instagram.com/reel/DcY_3drv5cp/',
+    postId: 'DcY_3drv5cp',
+    poster: '/assets/ather-onam/episode-02-poster.jpg',
+    aspect: 'portrait',
+  },
+  {
+    tag: 'Onam Campaign',
+    title: 'Ather — Episode 3',
+    href: 'https://www.instagram.com/reel/DcdwFJEvkBu/',
+    postId: 'DcdwFJEvkBu',
+    poster: '/assets/ather-onam/episode-03-poster.jpg',
+    aspect: 'portrait',
+  },
+  {
+    tag: 'Onam Campaign',
+    title: 'Ather — Episode 4',
+    href: 'https://www.instagram.com/reel/Dcfz01MPIu7/',
+    postId: 'Dcfz01MPIu7',
+    poster: '/assets/ather-onam/episode-04-poster.jpg',
+    aspect: 'portrait',
+  },
+];
+
+/**
+ * The home page's "Recent work" row: three picks from across the categories,
+ * chosen because each has a `preview` cut to loop in place.
+ */
+export const recentWork: WorkItem[] = [tvCommercials[0], tvCommercials[1], socialAds[0]];

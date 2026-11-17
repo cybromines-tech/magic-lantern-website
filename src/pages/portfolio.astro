@@ -4,7 +4,7 @@ import PageHero from '../components/PageHero.astro';
 import VideoTile from '../components/VideoTile.astro';
 import ReelModal from '../components/ReelModal.astro';
 import CtaBand from '../components/CtaBand.astro';
-import { aiVideos, socialAds, type WorkItem } from '../data/work';
+import { aiVideos, atherOnam, socialAds, tvCommercials, type WorkItem } from '../data/work';
 
 /* One entry per category. Adding Brand Films or Photoshoots later is an edit
    here plus a list in `data/work.ts` — the section markup below is a loop.
@@ -17,11 +17,11 @@ const sections: {
   items: WorkItem[];
 }[] = [
   {
-    id: 'social-media-ads',
+    id: 'onam-campaign-for-ather',
     num: '01',
-    title: 'Social Media Ads',
-    desc: 'Short-form work cut for the feed. Tap any one to watch it — the home page carries the three most recent.',
-    items: socialAds,
+    title: 'Onam Campaign For ATHER',
+    desc: 'A four-episode festive series for Ather, released across Onam. Tap an episode to watch it.',
+    items: atherOnam,
   },
   {
     id: 'ai-video-production',
@@ -29,6 +29,20 @@ const sections: {
     title: 'AI Video Production',
     desc: 'Generative film and AI-assisted production, built with the same story discipline as everything else we shoot.',
     items: aiVideos,
+  },
+  {
+    id: 'television-commercials',
+    num: '03',
+    title: 'Television Commercials',
+    desc: 'Longer spots made for the big screen, shot and finished to broadcast standard.',
+    items: tvCommercials,
+  },
+  {
+    id: 'social-media-ads',
+    num: '04',
+    title: 'Social Media Ads',
+    desc: 'Short-form work cut for the feed. Tap any one to watch it.',
+    items: socialAds,
   },
 ];
 ---
@@ -106,11 +120,25 @@ const sections: {
     color: var(--ml-muted);
   }
 
-  /* 260px lets four tiles share a row at full shell width, so a fourth reel
-     joins the row rather than stranding itself underneath. */
+  /* Always four to a row on desktop. A section with fewer than four reels
+     leaves the remaining columns empty rather than stretching its tiles, so
+     every category lines up on the same grid. */
   .cat__grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 18px;
+  }
+
+  @media (max-width: 900px) {
+    .cat__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+  }
+
+  @media (max-width: 460px) {
+    .cat__grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
   }
 </style>

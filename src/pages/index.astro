@@ -6,7 +6,7 @@ import VideoTile from '../components/VideoTile.astro';
 import ReelModal from '../components/ReelModal.astro';
 import CtaBand from '../components/CtaBand.astro';
 import { creativeServices, site, softwareServiceLinks } from '../data/site';
-import { socialAds } from '../data/work';
+import { recentWork } from '../data/work';
 
 const marqueeWords = [
   'Video Production',
@@ -424,7 +424,7 @@ const pupaReels: (PupaReel | null)[] = [
       <div class="work__grid">
         {
           /* Cap to 3 — the full set lives on the Work page. */
-          socialAds.slice(0, 3).map((item) => <VideoTile item={item} mode="preview" />)
+          recentWork.slice(0, 3).map((item) => <VideoTile item={item} mode="preview" />)
         }
       </div>
     </div>
