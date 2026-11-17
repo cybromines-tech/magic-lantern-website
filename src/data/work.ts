@@ -88,10 +88,54 @@ export const tvCommercials: WorkItem[] = [
     poster: '/assets/reels/skye-poster.jpg',
     aspect: 'portrait',
   },
+  {
+    /* No file we can host — plays through Instagram's embed. */
+    tag: 'Television Commercial',
+    title: 'Aster Women & Children',
+    href: 'https://www.instagram.com/reel/DDUND2Oz1k3/',
+    postId: 'DDUND2Oz1k3',
+    poster: '/assets/reels/aster-poster.jpg',
+    aspect: 'portrait',
+  },
 ];
 
 /** Most recent first. */
 export const socialAds: WorkItem[] = [
+  {
+    /* No file we can host — plays through Instagram's embed. */
+    tag: 'Social Media Ad',
+    title: 'Skye Holidays — Onam Offer',
+    href: 'https://www.instagram.com/reel/DOI-F5WlJA-/',
+    postId: 'DOI-F5WlJA-',
+    poster: '/assets/reels/skye-onam-poster.jpg',
+    aspect: 'portrait',
+  },
+  {
+    /* No file we can host — plays through Instagram's embed. */
+    tag: 'Social Media Ad',
+    title: 'Mahima Counselling',
+    href: 'https://www.instagram.com/reel/DSZ3WtbCLU7/',
+    postId: 'DSZ3WtbCLU7',
+    poster: '/assets/reels/mahima-poster.jpg',
+    aspect: 'portrait',
+  },
+  {
+    /* No file we can host — plays through Instagram's embed. */
+    tag: 'Social Media Ad',
+    title: 'Manappuram MaSkill',
+    href: 'https://www.instagram.com/reel/DOYhLjoD3-L/',
+    postId: 'DOYhLjoD3-L',
+    poster: '/assets/reels/maskill-poster.jpg',
+    aspect: 'portrait',
+  },
+  {
+    tag: 'Social Media Ad',
+    title: 'Autostarke Energy',
+    href: 'https://www.instagram.com/reel/DUdL9gdDxE0/',
+    full: '/assets/reels/autostarke.mp4',
+    poster: '/assets/reels/autostarke-poster.jpg',
+    aspect: 'portrait',
+  },
   {
     tag: 'Food & Product Shoot',
     title: 'Hearts and Plates',
@@ -102,19 +146,48 @@ export const socialAds: WorkItem[] = [
     aspect: 'portrait',
   },
   {
+    /* No file we can host — plays through Instagram's embed. */
+    tag: 'Social Reel',
+    title: 'Athira Suresh',
+    href: 'https://www.instagram.com/reel/DSfM6VCj4U8/',
+    postId: 'DSfM6VCj4U8',
+    poster: '/assets/reels/ml-athira-poster.jpg',
+    aspect: 'portrait',
+  },
+  {
+    /* No file we can host — plays through Instagram's embed. */
+    tag: 'Social Media Ad',
+    title: 'Skye Holidays — Dream Holiday',
+    href: 'https://www.instagram.com/reel/DPN8QY4CvSt/',
+    postId: 'DPN8QY4CvSt',
+    poster: '/assets/reels/skye-dream-holiday-poster.jpg',
+    aspect: 'portrait',
+  },
+  {
+    /* Cut from the master; no post link yet, so the modal's button opens
+       our profile. Swap `href` for the reel's permalink once there is one. */
+    tag: 'Social Media Ad',
+    title: 'Ather — Women’s Day',
+    href: 'https://www.instagram.com/magic__lantern_/',
+    full: '/assets/reels/ather-womens-day.mp4',
+    poster: '/assets/reels/ather-womens-day-poster.jpg',
+    aspect: 'portrait',
+  },
+  {
+    /* No file we can host — plays through Instagram's embed. */
+    tag: 'Social Media Ad',
+    title: 'Ather Rizta',
+    href: 'https://www.instagram.com/reel/Da7XGsOvJ5b/',
+    postId: 'Da7XGsOvJ5b',
+    poster: '/assets/reels/ather-rizta-poster.jpg',
+    aspect: 'portrait',
+  },
+  {
     tag: 'Social Media Ad',
     title: 'Fides Eye Care',
     href: 'https://www.instagram.com/reel/DU2ZyPYgWKo/',
     full: '/assets/reels/fides.mp4',
     poster: '/assets/reels/fides-poster.jpg',
-    aspect: 'portrait',
-  },
-  {
-    tag: 'Social Media Ad',
-    title: 'Autostarke Energy',
-    href: 'https://www.instagram.com/reel/DUdL9gdDxE0/',
-    full: '/assets/reels/autostarke.mp4',
-    poster: '/assets/reels/autostarke-poster.jpg',
     aspect: 'portrait',
   },
   {
@@ -151,9 +224,9 @@ export const socialAds: WorkItem[] = [
     poster: '/assets/reels/reshmi-kabab-poster.jpg',
     aspect: 'portrait',
   },
-  /* The two below have no file we can host — their posts carry no inline
-     player, only a link out — so they run through Instagram's embed. Export
-     the cuts and they become plain `full`/`poster` entries like the rest. */
+  /* No file we can host — the post carries no inline player, only a link
+     out — so it runs through Instagram's embed. Export the cut and it becomes
+     a plain `full`/`poster` entry like the rest. */
   {
     tag: 'Food Ad',
     title: 'Karimeen Fry',
@@ -162,20 +235,12 @@ export const socialAds: WorkItem[] = [
     poster: '/assets/reels/karimeen-fry-poster.jpg',
     aspect: 'portrait',
   },
-  {
-    tag: 'Social Reel',
-    title: 'Athira Suresh',
-    href: 'https://www.instagram.com/reel/DSfM6VCj4U8/',
-    postId: 'DSfM6VCj4U8',
-    poster: '/assets/reels/ml-athira-poster.jpg',
-    aspect: 'portrait',
-  },
 ];
 
 /**
  * AI video work. To publish another, drop its `.mp4` and `-poster.jpg` into
- * `/public/assets/ai-video/` and replace a placeholder with the same shape as
- * the first entry below.
+ * `/public/assets/ai-video/` and add an entry with the same shape as the first
+ * one below.
  */
 export const aiVideos: WorkItem[] = [
   {
@@ -195,7 +260,6 @@ export const aiVideos: WorkItem[] = [
     poster: '/assets/ai-video/ambiswami-poster.jpg',
     aspect: 'landscape',
   },
-  { pending: true, tag: 'AI Video Production', title: 'Synthetic presenter ad' },
 ];
 
 /**
@@ -240,7 +304,9 @@ export const atherOnam: WorkItem[] = [
 ];
 
 /**
- * The home page's "Recent work" row: three picks from across the categories,
- * chosen because each has a `preview` cut to loop in place.
+ * The home page's "Recent work" row: the first three reels, television
+ * commercials first, that have a `preview` cut to loop in place.
  */
-export const recentWork: WorkItem[] = [tvCommercials[0], tvCommercials[1], socialAds[0]];
+export const recentWork: WorkItem[] = [...tvCommercials, ...socialAds]
+  .filter((item) => 'preview' in item && !!item.preview)
+  .slice(0, 3);
